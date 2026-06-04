@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — AskTax.pk</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Cormorant+Garamond:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#0a0a0a;--surface:#111;--border:#1e1e1e;--text:#f0f0f0;--text-dim:#999;--text-muted:#555;--green:#00e87a;--radius:12px;}
+[data-theme="light"]{--bg:#f7f7f5;--surface:#fff;--border:#e0e0da;--text:#111;--text-dim:#444;--text-muted:#999;--green:#008f4a;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-weight:600;font-size:15px;}
+.logo-icon{width:28px;height:28px;}
+.theme-btn{background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-muted);padding:4px 6px;}
+.back-btn{padding:6px 14px;background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-dim);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;text-decoration:none;transition:all 0.2s;}
+.back-btn:hover{border-color:var(--green);color:var(--green);}
+.content{max-width:760px;margin:0 auto;padding:48px 24px 80px;}
+.content h1{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;margin-bottom:8px;}
+.content .date{font-size:12px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-bottom:36px;}
+h2{font-size:17px;font-weight:600;color:var(--text);margin:32px 0 12px;}
+p,li{font-size:14px;color:var(--text-dim);line-height:1.8;margin-bottom:10px;}
+ul{padding-left:20px;margin-bottom:12px;}
+a{color:var(--green);}
+.highlight{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:14px 18px;margin:20px 0;}
+.highlight p{margin:0;color:var(--text-dim);}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="index.html">
+    <img src="favicon.svg" alt="" class="logo-icon">
+    AskTax.pk
+  </a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <a class="back-btn" href="index.html">← Home</a>
+  </div>
+</header>
+<div class="content">
+  <h1>Privacy Policy</h1>
+  <div class="date">Last updated: May 2025 · Effective for all AskTax.pk users</div>
+
+  <div class="highlight">
+    <p>AskTax.pk is operated by Shaheer Salal (sole proprietor). Your data is protected and never sold. This policy explains what we collect, how we use it, and your rights.</p>
+  </div>
+
+  <h2>1. What We Collect</h2>
+  <ul>
+    <li><strong>Account data:</strong> Name, email address, hashed password (we never store plain-text passwords).</li>
+    <li><strong>Usage data:</strong> Questions you ask, AI responses generated, timestamps, and query counts.</li>
+    <li><strong>Technical data:</strong> IP address (for rate-limiting and abuse prevention), browser type via standard HTTP headers.</li>
+    <li><strong>Payment data:</strong> Payment amount, method, and date — recorded manually by admin after receiving confirmation. We do not store your card numbers or bank account details.</li>
+    <li><strong>Profile picture:</strong> If you upload one, stored in our secure MinIO object storage.</li>
+  </ul>
+
+  <h2>2. How We Use Your Data</h2>
+  <ul>
+    <li>To provide AI-powered tax answers from FBR documents.</li>
+    <li>To save your chat history so you can revisit past questions.</li>
+    <li>To enforce monthly query limits by subscription tier.</li>
+    <li>To send account-related communications (e.g. password reset if implemented).</li>
+    <li>To improve the accuracy of our AI model and document database.</li>
+    <li>To detect and prevent abuse, spam, or unauthorised access.</li>
+  </ul>
+
+  <h2>3. Payment Processing (Meezan Bank)</h2>
+  <p>Payments are processed via <strong>Meezan Bank</strong> payment gateway or direct bank transfer. When you make a payment:</p>
+  <ul>
+    <li>Your bank/card details are processed by Meezan Bank — AskTax.pk does not receive or store your card number, CVV, or PIN.</li>
+    <li>Meezan Bank is governed by the State Bank of Pakistan's data protection regulations and their own privacy policy.</li>
+    <li>We receive only a payment confirmation and transaction reference to activate your subscription.</li>
+    <li>If you pay via bank transfer, provide only the last 4 digits of your account for verification.</li>
+  </ul>
+
+  <h2>4. Data Sharing</h2>
+  <p>We do <strong>not</strong> sell, rent, or share your personal data with third parties, except:</p>
+  <ul>
+    <li><strong>OpenAI:</strong> Your question text is sent to OpenAI's API to generate answers. OpenAI's data processing policy applies. OpenAI does not use API inputs to train models by default.</li>
+    <li><strong>Meezan Bank:</strong> Payment details are shared with Meezan Bank solely to process transactions.</li>
+    <li><strong>Legal requirement:</strong> If required by Pakistani law or a valid court order.</li>
+  </ul>
+
+  <h2>5. Data Retention</h2>
+  <ul>
+    <li>Chat history is retained indefinitely to allow you to recover accidentally deleted conversations.</li>
+    <li>If you delete your account, your data is soft-deleted and will be permanently purged within 90 days unless you request earlier deletion.</li>
+    <li>IP rate-limit data is stored for 30 days.</li>
+  </ul>
+
+  <h2>6. Security</h2>
+  <ul>
+    <li>All data is transmitted over HTTPS (TLS 1.2+).</li>
+    <li>Passwords are hashed using bcrypt — we cannot view your password.</li>
+    <li>JWT tokens expire after 30 days.</li>
+    <li>Our infrastructure runs in Docker containers with network isolation.</li>
+  </ul>
+
+  <h2>7. Cookies & Local Storage</h2>
+  <p>AskTax.pk uses browser <strong>localStorage</strong> (not cookies) to store your login token and preferences (e.g. dark/light theme). No cross-site tracking cookies are used.</p>
+
+  <h2>8. Your Rights</h2>
+  <ul>
+    <li><strong>Access:</strong> View your data via your account page.</li>
+    <li><strong>Correction:</strong> Edit your name and profile picture at any time.</li>
+    <li><strong>Deletion:</strong> Request account deletion from your account page or by emailing us.</li>
+    <li><strong>Data export:</strong> Email us to request a copy of your data.</li>
+  </ul>
+
+  <h2>9. Contact</h2>
+  <p>For any privacy concerns, email: <a href="mailto:support@asktax.pk">support@asktax.pk</a></p>
+  <p>Or use the in-app messaging on your <a href="account.html#messages">account page</a> (Mon–Sat, 10am–6pm PKT).</p>
+</div>
+<script>
+let isDark = localStorage.getItem('theme') !== 'light';
+function applyTheme() { document.documentElement.setAttribute('data-theme', isDark?'dark':'light'); document.getElementById('themeBtn').textContent = isDark?'🌙':'☀️'; }
+function toggleTheme() { isDark=!isDark; localStorage.setItem('theme',isDark?'dark':'light'); applyTheme(); }
+applyTheme();
+</script>
+<footer style="border-top:1px solid var(--border);padding:24px;text-align:center;font-size:12px;color:var(--text-muted);">
+  <span>AskTax.pk &nbsp;·&nbsp; Not affiliated with FBR or Government of Pakistan</span><br>
+  <span style="margin-top:8px;display:inline-block;">
+    <a href="privacy-policy.html" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Privacy Policy</a>
+    <a href="refund-policy.html" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Refund Policy</a>
+    <a href="terms.html" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Terms of Service</a>
+    <a href="blog.html" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Blog</a>
+    <a href="mailto:support@asktax.pk" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Support</a>
+  </span>
+</footer></body>
+</html>

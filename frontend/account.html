@@ -1,0 +1,1167 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Account — AskTax.pk</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Cormorant+Garamond:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#0a0a0a;--surface:#111;--surface2:#161616;--surface3:#1c1c1c;
+  --border:#1e1e1e;--border2:#2a2a2a;
+  --text:#f0f0f0;--text-dim:#999;--text-muted:#555;
+  --green:#00e87a;--green-dim:#00c96a;--green-subtle:rgba(0,232,122,0.06);
+  --yellow:#f5c518;--red:#e84040;--blue:#4f9cf9;
+  --radius:12px;
+}
+[data-theme="light"]{
+  --bg:#f7f7f5;--surface:#fff;--surface2:#f2f2ef;--surface3:#e8e8e4;
+  --border:#e0e0da;--border2:#ccc;
+  --text:#111;--text-dim:#444;--text-muted:#999;
+  --green:#008f4a;--green-dim:#007a3d;--green-subtle:rgba(0,143,74,0.07);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+.header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-icon{width:38px;height:27px;display:flex;align-items:center;justify-content:center;}
+.logo-icon img{width:38px;height:27px;display:block;}
+.logo-text{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--text);}
+.logo-text span{color:var(--green);}
+.logo-sub{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-top:-2px;}
+.header-actions{display:flex;align-items:center;gap:10px;}
+.back-btn{display:flex;align-items:center;gap:5px;padding:6px 14px;background:none;border:1px solid var(--border2);border-radius:20px;color:var(--text-dim);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;text-decoration:none;transition:all 0.2s;}
+.back-btn:hover{border-color:var(--green);color:var(--green);}
+.theme-btn{background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-muted);padding:4px 6px;}
+.header-user{display:flex;align-items:center;gap:8px;}
+.header-avatar{width:28px;height:28px;border-radius:50%;background:var(--green-subtle);border:1px solid rgba(0,232,122,0.3);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--green);overflow:hidden;flex-shrink:0;}
+.header-avatar img{width:100%;height:100%;object-fit:cover;}
+.header-name{font-size:13px;font-weight:500;color:var(--text);}
+
+.account-main{max-width:680px;margin:0 auto;padding:32px 20px 80px;}
+.account-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;margin-bottom:16px;}
+
+/* PROFILE */
+.profile-row{display:flex;align-items:center;gap:20px;}
+.avatar-wrap{position:relative;flex-shrink:0;}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--green-subtle);border:2px solid rgba(0,232,122,0.3);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--green);cursor:pointer;overflow:hidden;transition:opacity 0.2s;}
+.avatar:hover{opacity:0.85;}
+.avatar img{width:100%;height:100%;object-fit:cover;}
+.avatar-upload-hint{position:absolute;bottom:-2px;right:-2px;background:var(--surface2);border:1px solid var(--border2);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;cursor:pointer;pointer-events:none;}
+#avatarInput{display:none;}
+.upload-status{font-size:11px;color:var(--text-muted);margin-top:4px;text-align:center;}
+
+.profile-info{flex:1;min-width:0;}
+.profile-name-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.profile-name{font-size:20px;font-weight:600;color:var(--text);}
+.edit-name-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:4px;transition:all 0.15s;flex-shrink:0;}
+.edit-name-btn:hover{color:var(--green);background:var(--green-subtle);}
+.name-input{font-size:18px;font-weight:600;color:var(--text);background:var(--surface);border:1px solid var(--green);border-radius:6px;padding:3px 10px;font-family:inherit;outline:none;flex:1;}
+.profile-email{font-size:13px;color:var(--text-dim);margin-bottom:8px;}
+.profile-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.meta-chip{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-muted);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:3px 8px;text-transform:uppercase;letter-spacing:0.5px;}
+.role-chip{color:var(--green);border-color:rgba(0,232,122,0.2);background:var(--green-subtle);}
+.trial-chip{color:var(--yellow);border-color:rgba(245,197,24,0.3);background:rgba(245,197,24,0.08);}
+
+/* PLAN */
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.card-title{font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1.2px;font-family:'IBM Plex Mono',monospace;}
+.plan-badge{font-size:10px;font-weight:700;font-family:'IBM Plex Mono',monospace;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;}
+.plan-badge.free{background:var(--surface2);border:1px solid var(--border2);color:var(--text-muted);}
+.plan-badge.basic{background:rgba(79,156,249,0.1);border:1px solid rgba(79,156,249,0.3);color:var(--blue);}
+.plan-badge.professional{background:var(--green-subtle);border:1px solid rgba(0,232,122,0.3);color:var(--green);}
+.plan-badge.firm{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.3);color:var(--yellow);}
+
+.usage-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.usage-label{font-size:13px;color:var(--text-dim);}
+.usage-num{font-size:13px;font-weight:600;color:var(--text);font-family:'IBM Plex Mono',monospace;}
+.usage-num.unlimited{color:var(--green);}
+.progress-track{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:20px;}
+.progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width 0.6s ease;}
+.progress-fill.warn{background:var(--yellow);}
+.progress-fill.full{background:var(--red);}
+.plan-features{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;}
+.plan-feature{font-size:12px;color:var(--text-dim);display:flex;align-items:center;gap:6px;}
+.plan-feature::before{content:'✓';color:var(--green);font-weight:700;font-size:11px;}
+.upgrade-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.upgrade-btn{padding:10px 20px;background:var(--green);border:none;border-radius:20px;color:#000;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;text-decoration:none;display:inline-block;}
+.upgrade-btn:hover{background:var(--green-dim);}
+.upgrade-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.upgrade-btn-pro{background:#7c3aed;color:#fff;}
+.upgrade-btn-pro:hover{background:#6d28d9;}
+.trial-active-notice{font-size:12px;color:var(--green);margin-bottom:8px;font-weight:500;}
+.contact-note{font-size:11px;color:var(--text-muted);}
+.upgrade-err{font-size:11px;color:var(--red);margin-top:6px;min-height:14px;}
+.trial-pending-box{display:flex;align-items:flex-start;gap:10px;background:rgba(245,197,24,0.06);border:1px solid rgba(245,197,24,0.25);border-radius:8px;padding:12px 14px;margin-top:10px;}
+.trial-pending-icon{font-size:16px;flex-shrink:0;margin-top:1px;}
+.trial-pending-text{font-size:12px;color:var(--text-dim);line-height:1.6;}
+.trial-pending-text strong{color:var(--yellow);}
+.upgrade-plan-card{margin-top:12px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:14px 16px;}
+.upgrade-plan-name{font-size:11px;font-weight:700;color:var(--green);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.upgrade-plan-price{font-size:17px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.upgrade-plan-price span{font-size:11px;font-weight:400;color:var(--text-muted);}
+.upgrade-plan-features{display:flex;flex-direction:column;gap:3px;margin-bottom:12px;}
+.upgrade-plan-feature{font-size:12px;color:var(--text-dim);display:flex;align-items:flex-start;gap:6px;}
+.upgrade-plan-feature::before{content:'✓';color:var(--green);font-size:10px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.firm-info-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:8px;margin-top:8px;}
+.firm-info-label{font-size:12px;color:var(--text-muted);}
+.firm-info-val{font-size:12px;font-weight:600;color:var(--text);}
+
+/* INVOICES */
+.invoice-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:8px;margin-bottom:8px;gap:10px;}
+.invoice-amount{font-size:14px;font-weight:600;color:var(--green);font-family:'IBM Plex Mono',monospace;white-space:nowrap;}
+.invoice-detail{font-size:11px;color:var(--text-muted);}
+.invoice-plan{font-size:10px;font-family:'IBM Plex Mono',monospace;background:var(--surface3);border:1px solid var(--border);border-radius:4px;padding:2px 7px;color:var(--text-dim);text-transform:uppercase;white-space:nowrap;}
+
+/* PRO TEAM MANAGEMENT */
+.team-input-row{display:flex;gap:8px;margin-bottom:12px;}
+.team-input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color 0.2s;}
+.team-input:focus{border-color:var(--green);}
+.team-action-btn{padding:8px 16px;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;}
+.team-add-btn{background:var(--green);color:#000;}
+.team-add-btn:hover{background:var(--green-dim);}
+.team-remove-btn{background:rgba(232,64,64,0.15);color:var(--red);border:1px solid rgba(232,64,64,0.3);}
+.team-remove-btn:hover{background:rgba(232,64,64,0.25);}
+.team-member-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--surface2);border-radius:8px;margin-bottom:6px;}
+.team-member-email{font-size:12px;color:var(--text);font-family:'IBM Plex Mono',monospace;}
+.team-member-status{font-size:10px;color:var(--text-muted);}
+
+/* CHATS */
+.chats-list{display:flex;flex-direction:column;gap:6px;}
+.chat-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;cursor:pointer;transition:border-color 0.2s,background 0.2s;position:relative;}
+.chat-item:hover{border-color:var(--border2);background:var(--surface3);}
+.chat-title-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.chat-title{font-size:13px;font-weight:500;color:var(--text);flex:1;line-height:1.4;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}
+.chat-actions{display:flex;gap:4px;opacity:0;transition:opacity 0.15s;flex-shrink:0;}
+.chat-item:hover .chat-actions{opacity:1;}
+.chat-action-btn{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:11px;padding:2px 7px;border-radius:4px;transition:all 0.15s;font-family:inherit;}
+.chat-action-btn:hover{background:var(--surface);color:var(--green);}
+.chat-action-btn.del:hover{color:var(--red);}
+.chat-title-input{font-size:13px;font-weight:500;color:var(--text);flex:1;background:var(--surface);border:1px solid var(--green);border-radius:6px;padding:3px 8px;font-family:inherit;outline:none;}
+.chat-meta{display:flex;align-items:center;justify-content:space-between;}
+.chat-snippet{font-size:11px;color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.chat-date{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;white-space:nowrap;margin-left:8px;}
+.chats-empty{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px;line-height:1.8;}
+.chats-empty a{color:var(--green);text-decoration:none;}
+.new-chat-tag{font-size:10px;font-family:'IBM Plex Mono',monospace;background:var(--green-subtle);color:var(--green);border:1px solid rgba(0,232,122,0.2);border-radius:4px;padding:2px 7px;white-space:nowrap;}
+
+/* RECOVERY */
+.recovery-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:6px;}
+.recovery-top{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.recovery-info{flex:1;min-width:0;}
+.recovery-title{font-size:13px;color:var(--text);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.recovery-date{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;}
+.request-restore-btn{padding:5px 12px;background:none;border:1px solid var(--border2);border-radius:6px;color:var(--text-muted);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.2s;white-space:nowrap;}
+.request-restore-btn:hover{border-color:var(--green);color:var(--green);}
+.restore-form{margin-top:10px;display:none;}
+.restore-form.open{display:block;}
+.restore-context{width:100%;padding:8px 10px;background:var(--surface);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-family:inherit;font-size:12px;resize:vertical;min-height:56px;outline:none;transition:border 0.2s;}
+.restore-context:focus{border-color:var(--green);}
+.restore-submit{margin-top:6px;padding:5px 14px;background:var(--green);border:none;border-radius:6px;color:#000;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+
+/* DANGER */
+.danger-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
+.danger-label{font-size:13px;color:var(--text-dim);}
+.logout-btn{padding:8px 18px;background:none;border:1px solid var(--border2);border-radius:20px;color:var(--text-muted);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.logout-btn:hover{border-color:var(--red);color:var(--red);}
+.delete-account-btn{padding:8px 18px;background:none;border:1px solid rgba(232,64,64,0.3);border-radius:20px;color:var(--red);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.delete-account-btn:hover{background:rgba(232,64,64,0.08);}
+
+/* FEEDBACK BTN */
+.feedback-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:none;border:1px solid var(--border2);border-radius:20px;color:var(--text-dim);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;text-decoration:none;transition:all 0.2s;}
+.feedback-btn:hover{border-color:var(--green);color:var(--green);}
+
+/* DELETE CONFIRM MODAL */
+.del-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;display:flex;align-items:center;justify-content:center;}
+.del-modal-overlay.hidden{display:none;}
+.del-modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius);padding:28px 24px;max-width:380px;width:100%;margin:0 16px;}
+.del-modal h3{font-size:16px;font-weight:600;color:var(--red);margin-bottom:8px;}
+.del-modal p{font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:16px;}
+.del-modal input{width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;outline:none;margin-bottom:14px;}
+.del-modal input:focus{border-color:var(--red);}
+.del-modal-actions{display:flex;gap:10px;justify-content:flex-end;}
+.del-confirm-btn{padding:8px 20px;background:var(--red);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+.del-confirm-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.del-cancel-btn{padding:8px 16px;background:none;border:1px solid var(--border2);border-radius:8px;color:var(--text-dim);font-size:13px;cursor:pointer;font-family:inherit;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#111;border:1px solid var(--green);color:var(--green);padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;z-index:300;pointer-events:none;opacity:0;transition:opacity 0.3s;}
+.toast.show{opacity:1;}
+
+/* PASSWORD CHANGE CARD */
+.pw-fields{display:flex;flex-direction:column;gap:10px;}
+.pw-field-label{font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-bottom:3px;}
+.pw-field-input{width:100%;padding:9px 12px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;outline:none;transition:border 0.2s;}
+.pw-field-input:focus{border-color:var(--green);}
+.pw-save-btn{margin-top:4px;padding:8px 20px;background:var(--green);border:none;border-radius:8px;color:#000;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;align-self:flex-start;}
+.pw-save-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.pw-error{font-size:11px;color:var(--red);margin-top:2px;min-height:14px;}
+
+.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,var(--surface3) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:6px;height:14px;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.hidden{display:none!important;}
+
+@media(max-width:520px){
+  .plan-features{grid-template-columns:1fr;}
+  .profile-row{flex-direction:column;align-items:flex-start;}
+  .account-main{padding:16px 12px 60px;}
+  .account-card{padding:18px 14px;}
+  /* Team input row: stack on very small screens */
+  .team-input-row{flex-wrap:wrap;}
+  .team-action-btn{width:100%;}
+  /* Upgrade buttons: stack vertically */
+  .upgrade-row{flex-direction:column;align-items:flex-start;}
+  .upgrade-btn{width:100%;text-align:center;}
+  /* Danger section: always stacked */
+  .danger-row{flex-direction:column;align-items:flex-start;}
+  /* Invoice rows: wrap detail text */
+  .invoice-row{flex-wrap:wrap;}
+}
+
+/* Confidence badge */
+.conf-badge{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-family:'IBM Plex Mono',monospace;padding:2px 7px;border-radius:10px;margin-left:6px;vertical-align:middle;}
+.conf-high{background:rgba(0,232,122,0.1);color:#00e87a;border:1px solid rgba(0,232,122,0.25);}
+.conf-mid{background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.25);}
+.conf-low{background:rgba(232,64,64,0.1);color:#e84040;border:1px solid rgba(232,64,64,0.25);}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="index.html">
+    <div class="logo-icon"><img src="favicon.svg" alt="AskTax logo"></div>
+    <div>
+      <div class="logo-text"><span>Ask</span>Tax.pk</div>
+      <div class="logo-sub">Pakistan Tax Assistant</div>
+    </div>
+  </a>
+  <div class="header-actions">
+    <div class="header-user" id="headerUser" style="display:none;">
+      <div class="header-avatar" id="headerAvatar"></div>
+      <span class="header-name" id="headerName"></span>
+    </div>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <a class="back-btn" href="index.html">← Chat</a>
+  </div>
+</header>
+
+<main class="account-main">
+
+  <!-- PROFILE -->
+  <div class="account-card">
+    <div class="profile-row">
+      <div class="avatar-wrap">
+        <div class="avatar" id="avatarEl" onclick="document.getElementById('avatarInput').click()">
+          <span id="avatarInitials">—</span>
+        </div>
+        <div class="avatar-upload-hint" title="Upload photo">✎</div>
+        <input type="file" id="avatarInput" accept="image/*" onchange="uploadAvatar(this)">
+        <div class="upload-status" id="uploadStatus"></div>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name-row">
+          <span class="profile-name" id="profileName"><div class="skeleton" style="width:140px;height:20px;"></div></span>
+          <button class="edit-name-btn" id="editNameBtn" onclick="startEditName()" title="Edit name" style="display:none;">✎</button>
+        </div>
+        <div class="profile-email" id="profileEmail"><div class="skeleton" style="width:200px;margin-top:4px;"></div></div>
+        <div class="profile-meta" id="profileMeta"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PLAN & USAGE -->
+  <div class="account-card">
+    <div class="card-header">
+      <span class="card-title">Plan & Usage</span>
+      <span class="plan-badge" id="planBadge">—</span>
+    </div>
+    <div class="usage-row">
+      <span class="usage-label">Queries this month</span>
+      <span class="usage-num" id="usageNum">—</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="plan-features" id="planFeatures"></div>
+    <div id="firmInfoBlock"></div>
+    <div class="upgrade-row" id="upgradeRow"></div>
+  </div>
+
+  <!-- INVOICES -->
+  <div class="account-card" id="invoicesCard" style="display:none;">
+    <div class="card-header" style="margin-bottom:16px;">
+      <span class="card-title">Payment History</span>
+    </div>
+    <div id="invoicesList"><div class="skeleton" style="height:42px;border-radius:8px;"></div></div>
+  </div>
+
+  <!-- PRO: TEAM MANAGEMENT -->
+  <div class="account-card hidden" id="teamCard">
+    <div class="card-header" style="margin-bottom:16px;">
+      <span class="card-title">Team Members</span>
+    </div>
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px;">Add users to your firm by email. They get their own chat access.</p>
+    <div class="team-input-row">
+      <input class="team-input" type="email" id="addMemberEmail" placeholder="colleague@example.com">
+      <button class="team-action-btn team-add-btn" onclick="addTeamMember()">Add Member</button>
+    </div>
+    <div id="inviteLinkBox" style="display:none;margin-bottom:12px;padding:12px 14px;background:rgba(0,232,122,0.07);border:1px solid rgba(0,232,122,0.25);border-radius:8px;">
+      <div style="font-size:11px;color:var(--green);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:6px;">Share this invite link</div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input id="inviteLinkInput" type="text" readonly style="flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:6px;padding:7px 10px;font-size:12px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;outline:none;">
+        <button onclick="copyInviteLink()" style="padding:7px 14px;background:var(--green);color:#000;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;" id="copyLinkBtn">Copy</button>
+      </div>
+      <div style="font-size:11px;color:var(--text-muted);margin-top:6px;">Send this link to your team member. They set their own password when they join.</div>
+    </div>
+    <div id="teamMembersList"></div>
+    <div class="form-error hidden" id="teamError" style="font-size:12px;color:var(--red);margin-top:8px;"></div>
+  </div>
+
+  <!-- CHATS -->
+  <div class="account-card">
+    <div class="card-header" style="margin-bottom:16px;">
+      <span class="card-title">Chat History</span>
+      <a class="back-btn" href="index.html" style="font-size:11px;">+ New Chat</a>
+    </div>
+    <div class="chats-list" id="chatsList">
+      <div class="skeleton" style="height:58px;border-radius:10px;"></div>
+      <div class="skeleton" style="height:58px;border-radius:10px;margin-top:6px;"></div>
+      <div class="skeleton" style="height:58px;border-radius:10px;margin-top:6px;"></div>
+    </div>
+  </div>
+
+  <!-- RECOVERY -->
+  <div class="account-card" id="recoveryCard" style="display:none;">
+    <div class="card-header" style="margin-bottom:8px;">
+      <span class="card-title">Recently Deleted Chats</span>
+      <button class="back-btn" style="font-size:11px;" onclick="loadDeletedChats()">↺ Refresh</button>
+    </div>
+    <p style="font-size:11px;color:var(--text-muted);margin-bottom:14px;">Deleted chats are kept safely. Click <strong>Request Restore</strong> on any chat, describe what it was about, and an admin will restore it within 1 business day.</p>
+    <div id="deletedChatsList"></div>
+  </div>
+
+  <!-- MESSAGES & SUPPORT -->
+  <div class="account-card" id="messagesCard">
+    <div class="card-header" style="margin-bottom:16px;">
+      <span class="card-title">Messages & Support</span>
+      <span id="unreadBadge" class="meta-chip" style="display:none;background:rgba(232,64,64,0.15);color:var(--red);border-color:rgba(232,64,64,0.3);"></span>
+    </div>
+    <div id="messageThread" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;margin-bottom:12px;"></div>
+    <div style="display:flex;gap:8px;">
+      <textarea id="msgInput" class="restore-context" placeholder="Type a message to support…" rows="2" style="flex:1;resize:none;" oninput="updateMsgCount()" maxlength="1000"></textarea>
+      <button id="msgSendBtn" onclick="sendSupportMessage()" class="restore-submit" style="align-self:flex-end;white-space:nowrap;" disabled>Send</button>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px;">
+      <div id="msgStatus" style="font-size:11px;color:var(--text-muted);"></div>
+      <div id="msgCount" style="font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;">0 / 1000</div>
+    </div>
+  </div>
+
+  <!-- PASSWORD CHANGE -->
+  <div class="account-card">
+    <div class="card-header" style="margin-bottom:16px;">
+      <span class="card-title">Change Password</span>
+    </div>
+    <div class="pw-fields">
+      <div>
+        <div class="pw-field-label">Current password</div>
+        <input class="pw-field-input" id="pwCurrent" type="password" placeholder="Your current password" maxlength="72" autocomplete="new-password">
+      </div>
+      <div>
+        <div class="pw-field-label">New password</div>
+        <input class="pw-field-input" id="pwNew" type="password" placeholder="At least 8 characters" maxlength="72" autocomplete="new-password">
+      </div>
+      <div>
+        <div class="pw-field-label">Confirm new password</div>
+        <input class="pw-field-input" id="pwConfirm" type="password" placeholder="Repeat new password" maxlength="72" autocomplete="new-password">
+      </div>
+      <div class="pw-error" id="pwError"></div>
+      <button class="pw-save-btn" id="pwSaveBtn" onclick="changePassword()">Update Password</button>
+    </div>
+  </div>
+
+  <!-- DANGER ZONE -->
+  <div class="account-card">
+    <div class="danger-row">
+      <span class="danger-label">Signed in as <strong id="dangerEmail">—</strong></span>
+      <button class="logout-btn" onclick="doLogout()">Log out</button>
+    </div>
+    <div class="danger-row" style="border-top:1px solid var(--border);padding-top:16px;">
+      <span class="danger-label" style="font-size:12px;color:var(--text-muted);">Permanently delete your account and all data.</span>
+      <button class="delete-account-btn" onclick="openDeleteModal()">Delete Account</button>
+    </div>
+  </div>
+
+  <!-- DELETE ACCOUNT MODAL -->
+  <div class="del-modal-overlay hidden" id="deleteModal" onclick="if(event.target===this)closeDeleteModal()">
+    <div class="del-modal">
+      <h3>Delete Account</h3>
+      <p>This will permanently deactivate your account. To confirm, type your email address below.</p>
+      <input type="email" id="deleteEmailConfirm" placeholder="your@email.com" oninput="updateDeleteBtn()">
+      <div class="del-modal-actions">
+        <button class="del-cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+        <button class="del-confirm-btn" id="deleteConfirmBtn" onclick="confirmDeleteAccount()" disabled>Delete my account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast"></div>
+
+</main>
+<script>
+const IS_LOCAL = window.location.hostname === 'localhost';
+const API_BASE = IS_LOCAL ? 'http://localhost:8002/api' : 'https://api.asktax.pk/api';
+const API_ORIGIN = IS_LOCAL ? 'http://localhost:8002' : 'https://api.asktax.pk';
+const token = localStorage.getItem('cabot_token');
+let isDark = localStorage.getItem('theme') !== 'light';
+let currentUser = null;
+
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  applyTheme();
+}
+applyTheme();
+
+function isTokenExpired(t) {
+  try {
+    const p = JSON.parse(atob(t.split('.')[1]));
+    return Date.now() / 1000 > p.exp;
+  } catch(e) { return true; }
+}
+
+function clearAndRedirect() {
+  localStorage.removeItem('cabot_token');
+  localStorage.removeItem('cabot_email');
+  localStorage.removeItem('cabot_firm_name');
+  localStorage.removeItem('cabot_queries_remaining');
+  sessionStorage.removeItem('chat_html');
+  window.location.href = 'index.html';
+}
+
+if (!token || isTokenExpired(token)) { window.location.href = 'index.html#login'; }
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function initials(name) {
+  if (!name) return '?';
+  const p = name.trim().split(/\s+/);
+  return p.length >= 2 ? (p[0][0] + p[1][0]).toUpperCase() : p[0].slice(0,2).toUpperCase();
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-PK', {day:'2-digit', month:'short', year:'numeric'});
+}
+function fmtDateTime(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('en-PK', {day:'2-digit', month:'short', year:'2-digit'})
+    + ' · ' + d.toLocaleTimeString('en-PK', {hour:'2-digit', minute:'2-digit', hour12:true});
+}
+
+const PLAN_LABELS = { free:'Free', basic:'Basic', professional:'Pro' };
+const PLAN_FEATURES = {
+  free:         ['20 queries / month','Chat history','FBR circulars','Email support'],
+  basic:        ['200 queries / month','Full chat history','FBR circulars','Priority support'],
+  professional: ['Unlimited queries','Full chat history','Chat sharing','Priority support'],
+};
+
+// ── PROFILE ──────────────────────────────────────────────────────────────────
+async function loadProfile() {
+  try {
+    const res = await fetch(`${API_BASE}/auth/me?token=${encodeURIComponent(token)}`, { cache: 'no-store' });
+    if (res.status === 401) { clearAndRedirect(); return; }
+    const u = await res.json();
+    currentUser = u;
+    renderProfile(u);
+    renderInvoices(u);
+    if (u.is_pro && (u.is_firm_admin || !u.firm)) renderTeamSection(u);
+  } catch(e) {
+    document.getElementById('profileName').textContent = 'Could not load profile';
+  }
+}
+
+function renderProfile(u) {
+  // Clear stale trial-pending flags when the tier has been upgraded
+  if (u.subscription_tier === 'basic' || u.subscription_tier === 'professional') {
+    localStorage.removeItem('trial_req_basic');
+  }
+  if (u.subscription_tier === 'professional') {
+    localStorage.removeItem('trial_req_professional');
+  }
+  // Also clear if the backend error was "already on this plan" (not a real pending)
+  // so the button remains visible for cross-plan upgrades
+  // Header name + avatar
+  const headerUser = document.getElementById('headerUser');
+  const headerAvatar = document.getElementById('headerAvatar');
+  const headerName = document.getElementById('headerName');
+  const displayName = u.full_name || u.email.split('@')[0];
+  headerName.textContent = displayName;
+  if (u.avatar_url) {
+    headerAvatar.innerHTML = `<img src="${API_ORIGIN}${u.avatar_url}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.innerHTML='${initials(displayName)}'">`;
+  } else {
+    headerAvatar.textContent = initials(displayName);
+  }
+  headerUser.style.display = 'flex';
+
+  // Main avatar
+  const avatarEl = document.getElementById('avatarEl');
+  if (u.avatar_url) {
+    avatarEl.innerHTML = `<img src="${API_ORIGIN}${u.avatar_url}" alt="avatar" onerror="this.parentElement.innerHTML='<span id=avatarInitials>${initials(displayName)}</span>'">`;
+  } else {
+    document.getElementById('avatarInitials').textContent = initials(displayName);
+  }
+
+  document.getElementById('profileName').textContent = displayName;
+  document.getElementById('editNameBtn').style.display = '';
+  document.getElementById('profileEmail').textContent = u.email;
+  document.getElementById('dangerEmail').textContent = u.email;
+
+  const accountType = u.firm ? 'Firm' : (u.subscription_tier === 'professional' ? 'Pro' : 'Individual');
+  let metaHtml = '';
+  if (u.created_at) metaHtml += `<span class="meta-chip">Since ${fmtDate(u.created_at)}</span>`;
+  metaHtml += `<span class="meta-chip role-chip">${esc(accountType)}</span>`;
+  if (u.is_on_trial) metaHtml += `<span class="meta-chip trial-chip">🕐 On Trial</span>`;
+  document.getElementById('profileMeta').innerHTML = metaHtml;
+
+  // Plan
+  const isFirmUser = !!u.firm;
+  const tier = isFirmUser ? 'firm' : (u.subscription_tier || 'free');
+  const planLabel = isFirmUser ? `Firm · ${(u.firm.plan||'').toUpperCase()}` : (PLAN_LABELS[tier] || tier);
+  const badge = document.getElementById('planBadge');
+  badge.textContent = planLabel;
+  badge.className = `plan-badge ${tier}`;
+
+  const used = u.queries_used || 0;
+  const limit = u.query_limit;
+  const unlimited = limit === null || limit === undefined;
+  const usageEl = document.getElementById('usageNum');
+  if (unlimited) {
+    usageEl.textContent = `${used.toLocaleString()} · Unlimited`;
+    usageEl.classList.add('unlimited');
+  } else {
+    usageEl.textContent = `${used} / ${limit}`;
+  }
+
+  if (!unlimited && limit > 0) {
+    const pct = Math.min(100, Math.round((used / limit) * 100));
+    const fill = document.getElementById('progressFill');
+    fill.style.width = pct + '%';
+    if (pct >= 100) fill.classList.add('full');
+    else if (pct >= 75) fill.classList.add('warn');
+  } else {
+    document.getElementById('progressFill').style.width = '100%';
+  }
+
+  const features = isFirmUser
+    ? [`${unlimited ? 'Unlimited' : limit} queries / month`, 'Full chat history', 'Firm account', 'Admin support']
+    : (PLAN_FEATURES[u.subscription_tier] || PLAN_FEATURES.free);
+  document.getElementById('planFeatures').innerHTML = features.map(f => `<div class="plan-feature">${esc(f)}</div>`).join('');
+
+  if (isFirmUser && u.firm) {
+    document.getElementById('firmInfoBlock').innerHTML = `
+      <div class="firm-info-row"><span class="firm-info-label">Firm</span><span class="firm-info-val">${esc(u.firm.name)}</span></div>
+      <div class="firm-info-row"><span class="firm-info-label">Plan</span><span class="firm-info-val">${esc(u.firm.plan)}</span></div>
+      <div class="firm-info-row"><span class="firm-info-label">Status</span><span class="firm-info-val">${esc(u.firm.status)}</span></div>`;
+  }
+
+  renderUpgradeRow(document.getElementById('upgradeRow'), u, isFirmUser, tier);
+}
+
+function renderUpgradeRow(container, u, isFirmUser, tier) {
+  if (!container) return;
+  tier = tier || (isFirmUser ? 'firm' : (u?.subscription_tier || 'free'));
+
+  if (isFirmUser || tier === 'professional' || tier === 'enterprise') { container.innerHTML = ''; return; }
+
+  // Show active trial expiry notice if on trial
+  const trialExpiry = u?.trial_expires_at ? new Date(u.trial_expires_at) : null;
+  const isActiveTrial = trialExpiry && trialExpiry > new Date();
+  const expiryStr = trialExpiry ? trialExpiry.toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'}) : '';
+
+  let trialNotice = '';
+  if (isActiveTrial) {
+    trialNotice = `<div class="trial-active-notice">Trial active · expires ${expiryStr}</div>`;
+  }
+
+  if (tier === 'free') {
+    container.innerHTML = `
+      ${trialNotice}
+      <div class="upgrade-plan-card">
+        <div class="upgrade-plan-name" style="margin-bottom:10px;">Try a Plan Free for 30 Days</div>
+        <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+          <button class="upgrade-btn upgrade-btn-basic" id="trialBtnBasic" onclick="startTrial('basic','trialBtnBasic')">
+            Trial Basic
+          </button>
+          <button class="upgrade-btn upgrade-btn-pro" id="trialBtnPro" onclick="startTrial('professional','trialBtnPro')">
+            Trial Pro
+          </button>
+          <span class="contact-note">30 days · No card required</span>
+        </div>
+        <div class="upgrade-plan-features" style="margin-top:12px;">
+          <div class="upgrade-plan-feature">Basic: 200 queries/month · PKR 2,999/mo after trial</div>
+          <div class="upgrade-plan-feature">Pro: Unlimited queries · PKR 5,999/mo after trial</div>
+        </div>
+        <div class="upgrade-err hidden" id="upgradeErr"></div>
+      </div>`;
+  } else {
+    // basic tier — only offer Pro trial
+    container.innerHTML = `
+      ${trialNotice}
+      <div class="upgrade-plan-card">
+        <div class="upgrade-plan-name">Pro Plan</div>
+        <div class="upgrade-plan-price">PKR 5,999 <span>/ month</span></div>
+        <div class="upgrade-plan-features">
+          <div class="upgrade-plan-feature">Unlimited queries</div>
+          <div class="upgrade-plan-feature">Full chat history</div>
+          <div class="upgrade-plan-feature">Chat sharing links</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <button class="upgrade-btn upgrade-btn-pro" id="trialBtnPro" onclick="startTrial('professional','trialBtnPro')">
+            Trial Pro
+          </button>
+          <span class="contact-note">30 days · No card required</span>
+        </div>
+        <div class="upgrade-err hidden" id="upgradeErr"></div>
+      </div>`;
+  }
+}
+
+// ── NAME EDIT ─────────────────────────────────────────────────────────────────
+function startEditName() {
+  const nameEl = document.getElementById('profileName');
+  const editBtn = document.getElementById('editNameBtn');
+  const current = nameEl.textContent;
+  const input = document.createElement('input');
+  input.className = 'name-input';
+  input.value = current;
+  input.onkeydown = e => {
+    if (e.key === 'Enter') { e.preventDefault(); saveName(input, nameEl, editBtn); }
+    if (e.key === 'Escape') { input.replaceWith(nameEl); editBtn.style.display = ''; }
+  };
+  input.onblur = () => saveName(input, nameEl, editBtn);
+  nameEl.replaceWith(input);
+  editBtn.style.display = 'none';
+  input.focus(); input.select();
+}
+
+async function saveName(input, nameEl, editBtn) {
+  const newName = input.value.trim();
+  input.replaceWith(nameEl);
+  editBtn.style.display = '';
+  if (!newName || newName === nameEl.textContent) return;
+  nameEl.textContent = newName;
+  document.getElementById('headerName').textContent = newName;
+  try {
+    await fetch(`${API_BASE}/auth/me?token=${encodeURIComponent(token)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name: newName }),
+    });
+  } catch(e) { /* silent */ }
+}
+
+// ── AVATAR UPLOAD ─────────────────────────────────────────────────────────────
+async function uploadAvatar(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById('uploadStatus');
+  status.textContent = 'Uploading…';
+  const form = new FormData();
+  form.append('file', file);
+  try {
+    const res = await fetch(`${API_BASE}/auth/avatar?token=${encodeURIComponent(token)}`, {
+      method: 'POST', body: form,
+    });
+    if (!res.ok) { const e = await res.json(); status.textContent = e.detail || 'Upload failed'; return; }
+    const data = await res.json();
+    status.textContent = '✓ Updated';
+    document.getElementById('avatarEl').innerHTML = `<img src="${API_ORIGIN}${data.avatar_url}&_=${Date.now()}" alt="avatar">`;
+    document.getElementById('headerAvatar').innerHTML = `<img src="${API_ORIGIN}${data.avatar_url}&_=${Date.now()}" alt="avatar" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+    setTimeout(() => { status.textContent = ''; }, 2000);
+  } catch(e) {
+    status.textContent = 'Upload failed';
+  }
+  input.value = '';
+}
+
+// ── INVOICES ──────────────────────────────────────────────────────────────────
+async function renderInvoices(u) {
+  if (!u.subscription_tier || u.subscription_tier === 'free') return;
+  try {
+    const res = await fetch(`${API_BASE}/admin/payments?token=${encodeURIComponent(token)}&user_id=${u.id}`, { cache: 'no-store' });
+    if (!res.ok) return; // hide card if endpoint not accessible
+    const data = await res.json();
+    const invoices = (Array.isArray(data) ? data : data.payments || []).filter(p => p.user_id === u.id || !p.user_id);
+    if (!invoices.length) return; // hide card if no records
+    document.getElementById('invoicesCard').style.display = '';
+    document.getElementById('invoicesList').innerHTML = invoices.map(inv => `
+      <div class="invoice-row">
+        <div class="invoice-info">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="invoice-amount">PKR ${(inv.amount_pkr||0).toLocaleString()}</span>
+            <span class="invoice-plan">${esc(inv.plan||'—')}</span>
+          </div>
+          <div class="invoice-detail">${fmtDate(inv.created_at)}${inv.method?' · '+esc(inv.method):''}</div>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { /* hide on error */ }
+}
+
+// ── TEAM SECTION (Pro / firm admin) ──────────────────────────────────────────
+function renderTeamSection(u) {
+  document.getElementById('teamCard').classList.remove('hidden');
+  loadTeamMembers();
+}
+
+async function loadTeamMembers() {
+  if (!currentUser?.firm) {
+    document.getElementById('teamMembersList').innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Enter a colleague\'s email above to add your first team member.</p>';
+    return;
+  }
+  try {
+    const res = await fetch(`${API_BASE}/firm/members?token=${encodeURIComponent(token)}`, { cache: 'no-store' });
+    if (!res.ok) { document.getElementById('teamMembersList').innerHTML = '<p style="font-size:12px;color:var(--text-muted);">Could not load members.</p>'; return; }
+    const members = await res.json();
+    if (!members.length) { document.getElementById('teamMembersList').innerHTML = '<p style="font-size:12px;color:var(--text-muted);">No members yet.</p>'; return; }
+    const me = currentUser?.id;
+    document.getElementById('teamMembersList').innerHTML = members.map(m => `
+      <div class="team-member-row" id="member-row-${m.id}" style="flex-direction:column;align-items:stretch;gap:8px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div style="flex:1;min-width:0;">
+            <div class="team-member-email">${esc(m.email)}</div>
+            <div class="team-member-status">${esc(m.full_name||'')}${m.invite_accepted ? '' : ' · Pending'}</div>
+          </div>
+          <span style="font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;">${esc(m.role||'member')}</span>
+          ${m.id !== me && m.role !== 'firm_owner' ? `<button onclick="removeMemberById(${m.id},'${esc(m.email)}')" style="background:none;border:1px solid var(--border2);color:var(--text-muted);font-size:10px;padding:3px 8px;border-radius:5px;cursor:pointer;font-family:inherit;" onmouseover="this.style.borderColor='var(--red)';this.style.color='var(--red)'" onmouseout="this.style.borderColor='var(--border2)';this.style.color='var(--text-muted)'">Remove</button>` : ''}
+        </div>
+        ${!m.invite_accepted && m.invite_link ? `
+        <div style="display:flex;align-items:center;gap:6px;">
+          <input type="text" readonly value="${esc(m.invite_link)}" style="flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:5px;padding:5px 8px;font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;outline:none;" onclick="this.select()">
+          <button onclick="copyText('${esc(m.invite_link)}', this)" style="background:none;border:1px solid rgba(0,232,122,0.35);color:var(--green);font-size:10px;padding:4px 10px;border-radius:5px;cursor:pointer;font-family:inherit;white-space:nowrap;">Copy Link</button>
+        </div>` : ''}
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+
+async function addTeamMember() {
+  const email = document.getElementById('addMemberEmail').value.trim();
+  const errEl = document.getElementById('teamError');
+  if (!email) { errEl.textContent='Enter an email'; errEl.classList.remove('hidden'); return; }
+  errEl.classList.add('hidden');
+  try {
+    // Auto-create firm for Pro users who don't have one yet
+    if (!currentUser?.firm) {
+      const setupRes = await fetch(`${API_BASE}/firm/auto-create?token=${encodeURIComponent(token)}`, { method: 'POST' });
+      const setupData = await setupRes.json();
+      if (!setupRes.ok) { errEl.textContent = setupData.detail || 'Could not set up firm'; errEl.classList.remove('hidden'); return; }
+      currentUser.firm = { id: setupData.firm_id, name: setupData.firm_name, plan: 'pro', status: 'active' };
+      currentUser.is_firm_admin = true;
+    }
+    const res = await fetch(`${API_BASE}/firm/invite?token=${encodeURIComponent(token)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const d = await res.json();
+    if (!res.ok) { errEl.textContent = d.detail || 'Failed to invite'; errEl.classList.remove('hidden'); return; }
+    document.getElementById('addMemberEmail').value = '';
+    if (d.invite_link) {
+      document.getElementById('inviteLinkInput').value = d.invite_link;
+      document.getElementById('inviteLinkBox').style.display = 'block';
+    }
+    loadTeamMembers();
+  } catch(e) { errEl.textContent = 'Connection error'; errEl.classList.remove('hidden'); }
+}
+
+function copyInviteLink() {
+  const input = document.getElementById('inviteLinkInput');
+  navigator.clipboard.writeText(input.value).then(() => {
+    const btn = document.getElementById('copyLinkBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+  }).catch(() => { input.select(); document.execCommand('copy'); });
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).catch(() => {});
+  if (btn) { const orig = btn.textContent; btn.textContent = 'Copied!'; setTimeout(() => { btn.textContent = orig; }, 2000); }
+}
+
+async function removeMemberById(id, email) {
+  if (!confirm(`Remove ${email} from your firm?`)) return;
+  const errEl = document.getElementById('teamError');
+  errEl.classList.add('hidden');
+  try {
+    const res = await fetch(`${API_BASE}/firm/members/${id}?token=${encodeURIComponent(token)}`, { method: 'DELETE' });
+    if (res.ok) {
+      const row = document.getElementById(`member-row-${id}`);
+      if (row) row.remove();
+    } else {
+      const d = await res.json();
+      errEl.textContent = d.detail || 'Failed to remove';
+      errEl.classList.remove('hidden');
+    }
+  } catch(e) { errEl.textContent = 'Connection error'; errEl.classList.remove('hidden'); }
+}
+
+// ── CONFIDENCE BADGE ─────────────────────────────────────────────────────────
+function confBadgeHtml(score) {
+  if (score === null || score === undefined) return '';
+  const pct = Math.round(score * 100);
+  if (pct >= 50) return `<span class="conf-badge conf-high">●&nbsp;${pct}%</span>`;
+  if (pct >= 30) return `<span class="conf-badge conf-mid">●&nbsp;${pct}%</span>`;
+  return `<span class="conf-badge conf-low">●&nbsp;${pct}% Verify</span>`;
+}
+
+// ── CHATS ─────────────────────────────────────────────────────────────────────
+async function loadChats() {
+  try {
+    const res = await fetch(`${API_BASE}/history?token=${encodeURIComponent(token)}`, { cache: 'no-store' });
+    if (!res.ok) { document.getElementById('chatsList').innerHTML = '<div class="chats-empty">Could not load chats.</div>'; return; }
+    const items = await res.json();
+    if (!items.length) {
+      document.getElementById('chatsList').innerHTML = '<div class="chats-empty">No chats yet.<br><a href="index.html">Ask your first question →</a></div>';
+      // Show recovery button even if no active chats
+      loadDeletedChats();
+      return;
+    }
+    document.getElementById('chatsList').innerHTML = items.map(h => {
+      const label = esc(h.title || h.query);
+      const snippet = h.title ? esc(h.query) : '';
+      const isNew = new Date(h.created_at) > new Date(Date.now() - 3600000);
+      return `<div class="chat-item" id="chat-${h.id}" onclick="openChat(event,${h.id})">
+        <div class="chat-title-row">
+          <div class="chat-title" id="chat-title-${h.id}">${label}${isNew?'<span class="new-chat-tag" style="margin-left:6px;">New</span>':''}</div>
+          ${confBadgeHtml(h.confidence_score)}
+          <div class="chat-actions">
+            <button class="chat-action-btn" onclick="startRename(event,${h.id})" title="Rename">✎</button>
+            <button class="chat-action-btn del" onclick="deleteChat(event,${h.id})" title="Delete">🗑</button>
+          </div>
+        </div>
+        <div class="chat-meta">
+          <div class="chat-snippet" id="chat-snippet-${h.id}">${snippet}</div>
+          <div class="chat-date">${fmtDateTime(h.created_at)}</div>
+        </div>
+      </div>`;
+    }).join('');
+    loadDeletedChats();
+  } catch(e) {
+    document.getElementById('chatsList').innerHTML = '<div class="chats-empty">Could not load chats.</div>';
+  }
+}
+
+function openChat(e, id) {
+  if (e.target.closest('.chat-actions') || e.target.classList.contains('chat-title-input')) return;
+  window.location.href = `index.html?chat_id=${id}`;
+}
+
+function startRename(e, id) {
+  e.stopPropagation();
+  const titleEl = document.getElementById(`chat-title-${id}`);
+  const current = (titleEl.firstChild?.textContent || titleEl.textContent).trim();
+  const input = document.createElement('input');
+  input.className = 'chat-title-input';
+  input.value = current;
+  input.onclick = ev => ev.stopPropagation();
+  input.onkeydown = ev => {
+    if (ev.key === 'Enter') { ev.preventDefault(); saveRename(id, input.value, titleEl, input); }
+    if (ev.key === 'Escape') { titleEl.style.display = ''; input.remove(); }
+  };
+  input.onblur = () => saveRename(id, input.value, titleEl, input);
+  titleEl.style.display = 'none';
+  titleEl.parentNode.insertBefore(input, titleEl);
+  input.focus(); input.select();
+}
+
+async function saveRename(id, newTitle, titleEl, input) {
+  input.remove();
+  titleEl.style.display = '';
+  const trimmed = newTitle.trim();
+  if (!trimmed || trimmed === titleEl.textContent) return;
+  titleEl.firstChild ? titleEl.firstChild.textContent = trimmed : (titleEl.textContent = trimmed);
+  try {
+    await fetch(`${API_BASE}/history/${id}/title?token=${encodeURIComponent(token)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: trimmed }),
+    });
+  } catch(e) {}
+}
+
+async function deleteChat(e, id) {
+  e.stopPropagation();
+  if (!confirm('Delete this chat? You can request it to be restored from the Recently Deleted section.')) return;
+  try {
+    const res = await fetch(`${API_BASE}/history/${id}?token=${encodeURIComponent(token)}`, { method: 'DELETE' });
+    if (res.ok) {
+      const el = document.getElementById(`chat-${id}`);
+      if (el) el.remove();
+      loadDeletedChats();
+    }
+  } catch(e) {}
+}
+
+// ── RECOVERY ──────────────────────────────────────────────────────────────────
+async function loadDeletedChats() {
+  try {
+    const res = await fetch(`${API_BASE}/history/deleted?token=${encodeURIComponent(token)}`, { cache: 'no-store' });
+    if (!res.ok) return;
+    const items = await res.json();
+    if (!items.length) { document.getElementById('recoveryCard').style.display = 'none'; return; }
+    document.getElementById('recoveryCard').style.display = '';
+    document.getElementById('deletedChatsList').innerHTML = items.map(h => `
+      <div class="recovery-item" id="del-${h.id}">
+        <div class="recovery-top">
+          <div class="recovery-info">
+            <div class="recovery-title">${esc(h.title || h.query)}</div>
+            <div class="recovery-date">Deleted ${h.deleted_at ? fmtDateTime(h.deleted_at) : ''}</div>
+          </div>
+          <button class="request-restore-btn" onclick="toggleRestoreForm(${h.id})">Request Restore</button>
+        </div>
+        <div class="restore-form" id="restore-form-${h.id}">
+          <textarea class="restore-context" id="restore-ctx-${h.id}" placeholder="Briefly describe what this chat was about so the admin can identify it…" rows="2"></textarea>
+          <button class="restore-submit" onclick="submitRestoreRequest(${h.id})">Submit Request</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+
+function toggleRestoreForm(id) {
+  const form = document.getElementById(`restore-form-${id}`);
+  if (form) form.classList.toggle('open');
+}
+
+async function submitRestoreRequest(id) {
+  const ctx = (document.getElementById(`restore-ctx-${id}`)?.value || '').trim();
+  try {
+    const res = await fetch(`${API_BASE}/history/${id}/request-restore?token=${encodeURIComponent(token)}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ context: ctx }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      const form = document.getElementById(`restore-form-${id}`);
+      if (form) form.innerHTML = `<p style="font-size:12px;color:var(--green);margin-top:8px;">✓ ${data.message}</p>`;
+    } else {
+      alert(data.detail || 'Request failed');
+    }
+  } catch(e) { alert('Network error, please try again.'); }
+}
+
+
+// ── LOGOUT & DELETE ACCOUNT ───────────────────────────────────────────────────
+function doLogout() {
+  if (!confirm('Are you sure you want to log out?')) return;
+  localStorage.removeItem('cabot_token');
+  localStorage.removeItem('cabot_email');
+  localStorage.removeItem('cabot_firm_name');
+  localStorage.removeItem('cabot_queries_remaining');
+  sessionStorage.removeItem('chat_html');
+  window.location.href = 'index.html';
+}
+
+async function doDeleteAccount() {
+  if (!confirm('Are you sure you want to delete your account? This action is reversible by contacting support.')) return;
+  if (!confirm('This will deactivate your account. Really proceed?')) return;
+  try {
+    const res = await fetch(`${API_BASE}/auth/me?token=${encodeURIComponent(token)}`, { method: 'DELETE' });
+    if (res.ok) {
+      alert('Account deleted. You can contact shaheersalal@gmail.com to recover it.');
+      localStorage.removeItem('cabot_token');
+      localStorage.removeItem('cabot_email');
+      window.location.href = 'index.html';
+    }
+  } catch(e) { alert('Could not delete account. Please try again.'); }
+}
+
+// ── MESSAGING ─────────────────────────────────────────────────────────────────
+function fmtTime(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  const today = new Date();
+  const isToday = d.toDateString() === today.toDateString();
+  if (isToday) return d.toLocaleTimeString('en-PK', {hour:'2-digit', minute:'2-digit', hour12:true});
+  return d.toLocaleDateString('en-PK', {day:'2-digit', month:'short'}) + ' ' + d.toLocaleTimeString('en-PK', {hour:'2-digit', minute:'2-digit', hour12:true});
+}
+
+async function loadMessages() {
+  try {
+    const res = await fetch(`${API_BASE}/messages?token=${encodeURIComponent(token)}`, {cache:'no-store'});
+    if (!res.ok) return;
+    const msgs = await res.json();
+    const thread = document.getElementById('messageThread');
+    if (!msgs.length) {
+      thread.innerHTML = `<p style="font-size:12px;color:var(--text-muted);text-align:center;padding:20px 0;">No messages yet. Send us a message — we respond within 1 business day.</p>`;
+      return;
+    }
+    thread.innerHTML = msgs.map(m => {
+      const isAdmin = m.from_admin;
+      return `<div style="display:flex;flex-direction:column;align-items:${isAdmin?'flex-start':'flex-end'};">
+        <div style="max-width:85%;padding:10px 14px;border-radius:${isAdmin?'4px 12px 12px 12px':'12px 4px 12px 12px'};background:${isAdmin?'var(--surface2)':'var(--green-subtle)'};border:1px solid ${isAdmin?'var(--border)':'rgba(0,232,122,0.2)'};font-size:13px;color:var(--text);line-height:1.6;white-space:pre-wrap;">${esc(m.body)}</div>
+        <div style="font-size:10px;color:var(--text-muted);margin-top:2px;font-family:'IBM Plex Mono',monospace;">${isAdmin?'Support · ':''  }${fmtTime(m.created_at)}</div>
+      </div>`;
+    }).join('');
+    thread.scrollTop = thread.scrollHeight;
+
+    // Unread badge
+    const unread = msgs.filter(m => m.from_admin && !m.read_at).length;
+    const badge = document.getElementById('unreadBadge');
+    if (unread > 0) { badge.textContent = `${unread} new`; badge.style.display = ''; }
+    else badge.style.display = 'none';
+
+    // Handle #messages anchor scroll
+    if (window.location.hash === '#messages') {
+      document.getElementById('messagesCard')?.scrollIntoView({behavior:'smooth'});
+    }
+  } catch(e) {}
+}
+
+function updateMsgCount() {
+  const val = document.getElementById('msgInput').value;
+  document.getElementById('msgCount').textContent = `${val.length} / 1000`;
+  document.getElementById('msgSendBtn').disabled = !val.trim();
+}
+
+async function sendSupportMessage() {
+  const input = document.getElementById('msgInput');
+  const status = document.getElementById('msgStatus');
+  const btn = document.getElementById('msgSendBtn');
+  const body = (input.value || '').trim();
+  if (!body) return;
+  btn.disabled = true; btn.textContent = 'Sending…';
+  status.textContent = '';
+  try {
+    const res = await fetch(`${API_BASE}/messages?token=${encodeURIComponent(token)}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({body}),
+    });
+    if (res.ok) {
+      input.value = '';
+      document.getElementById('msgCount').textContent = '0 / 1000';
+      showToast('Message sent — we\'ll reply within 1 business day');
+      loadMessages();
+    } else {
+      const d = await res.json();
+      status.textContent = d.detail || 'Send failed';
+    }
+  } catch(e) { status.textContent = 'Connection error'; }
+  finally { btn.disabled = false; btn.textContent = 'Send'; }
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── DELETE ACCOUNT MODAL ──────────────────────────────────────────────────────
+function openDeleteModal() {
+  document.getElementById('deleteEmailConfirm').value = '';
+  document.getElementById('deleteConfirmBtn').disabled = true;
+  document.getElementById('deleteModal').classList.remove('hidden');
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.add('hidden');
+}
+function updateDeleteBtn() {
+  const val = document.getElementById('deleteEmailConfirm').value.trim().toLowerCase();
+  const expected = (currentUser?.email || localStorage.getItem('cabot_email') || '').toLowerCase();
+  document.getElementById('deleteConfirmBtn').disabled = val !== expected;
+}
+async function confirmDeleteAccount() {
+  const btn = document.getElementById('deleteConfirmBtn');
+  btn.disabled = true; btn.textContent = 'Deleting…';
+  try {
+    const res = await fetch(`${API_BASE}/auth/me?token=${encodeURIComponent(token)}`, { method: 'DELETE' });
+    if (res.ok) {
+      closeDeleteModal();
+      showToast('Account deleted. Contact support@asktax.pk to recover it.');
+      setTimeout(() => {
+        ['cabot_token','cabot_email','cabot_firm_name','cabot_queries_remaining'].forEach(k => localStorage.removeItem(k));
+        window.location.href = 'index.html';
+      }, 2000);
+    } else {
+      const d = await res.json().catch(()=>({}));
+      btn.textContent = d.detail || 'Delete failed';
+      btn.disabled = false;
+    }
+  } catch(e) { btn.textContent = 'Error — try again'; btn.disabled = false; }
+}
+
+// ── PASSWORD CHANGE ───────────────────────────────────────────────────────────
+async function changePassword() {
+  const oldPw = document.getElementById('pwCurrent').value;
+  const newPw = document.getElementById('pwNew').value;
+  const confirmPw = document.getElementById('pwConfirm').value;
+  const errEl = document.getElementById('pwError');
+  const btn = document.getElementById('pwSaveBtn');
+  errEl.textContent = '';
+  if (!oldPw || !newPw || !confirmPw) { errEl.textContent = 'All fields are required'; return; }
+  if (newPw.length < 8) { errEl.textContent = 'New password must be at least 8 characters'; return; }
+  if (newPw !== confirmPw) { errEl.textContent = 'Passwords do not match'; return; }
+  btn.disabled = true; btn.textContent = 'Updating…';
+  try {
+    const res = await fetch(`${API_BASE}/auth/change-password`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ token, old_password: oldPw, new_password: newPw }),
+    });
+    const d = await res.json();
+    if (res.ok) {
+      ['pwCurrent','pwNew','pwConfirm'].forEach(id => document.getElementById(id).value = '');
+      showToast('Password updated successfully');
+    } else {
+      errEl.textContent = d.detail || 'Update failed';
+    }
+  } catch(e) { errEl.textContent = 'Connection error. Try again.'; }
+  finally { btn.disabled = false; btn.textContent = 'Update Password'; }
+}
+
+async function startTrial(plan, btnId) {
+  const planLabel = plan === 'professional' ? 'Pro' : 'Basic';
+  const btn = document.getElementById(btnId);
+  const errEl = document.getElementById('upgradeErr');
+  if (btn) { btn.disabled = true; btn.textContent = 'Activating…'; }
+  if (errEl) { errEl.textContent = ''; errEl.classList.add('hidden'); }
+  try {
+    const res = await fetch(`${API_BASE}/trial/start?token=${encodeURIComponent(token)}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({plan}),
+    });
+    const d = await res.json();
+    if (res.ok) {
+      showToast(`${planLabel} trial activated — expires ${new Date(d.trial_expires_at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}`);
+      // Reload profile to reflect new tier + trial_expires_at
+      loadProfile();
+    } else {
+      if (btn) { btn.disabled = false; btn.textContent = `Trial ${planLabel}`; }
+      if (errEl) { errEl.textContent = d.detail || 'Activation failed. Try again.'; errEl.classList.remove('hidden'); }
+    }
+  } catch(e) {
+    if (btn) { btn.disabled = false; btn.textContent = `Trial ${planLabel}`; }
+    if (errEl) { errEl.textContent = 'Connection error. Try again.'; errEl.classList.remove('hidden'); }
+  }
+}
+
+loadProfile();
+loadChats();
+loadMessages();
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: fbrbot_postgres
+    environment:
+      POSTGRES_USER: fbrbot
+      POSTGRES_PASSWORD: fbrbot_secure_pass
+      POSTGRES_DB: fbrbot_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    restart: always
+
+  redis:
+    image: redis:7
+    container_name: fbrbot_redis
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+    restart: always
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: fbrbot_qdrant
+    volumes:
+      - qdrant_data:/qdrant/storage
+    networks:
+      - internal
+    restart: always
+
+  minio:
+    image: minio/minio:latest
+    container_name: fbrbot_minio
+    environment:
+      MINIO_ROOT_USER: fbrbot_minio
+      MINIO_ROOT_PASSWORD: fbrbot_minio_pass
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - internal
+    restart: always
+
+  api:
+    image: python:3.11-slim
+    container_name: fbrbot_api
+    working_dir: /app
+    volumes:
+      - .:/app
+      - pip_cache:/root/.cache/pip
+    command: >
+      sh -c "apt-get update -qq && apt-get install -y -qq tesseract-ocr tesseract-ocr-eng tesseract-ocr-urd &&
+             pip install -r requirements.txt --quiet &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8002 --workers 2"
+    depends_on:
+      - postgres
+      - redis
+      - qdrant
+      - minio
+    env_file:
+      - .env
+    networks:
+      - internal
+    restart: always
+
+  frontend:
+    image: python:3.11-slim
+    container_name: fbrbot_frontend
+    working_dir: /app/frontend
+    volumes:
+      - .:/app
+    command: python -m http.server 3001
+    networks:
+      - internal
+    restart: always
+
+  scheduler:
+    image: python:3.11-slim
+    container_name: fbrbot_scheduler
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: >
+      sh -c "apt-get update -qq && apt-get install -y -qq tesseract-ocr tesseract-ocr-urd chromium chromium-driver &&
+             pip install -r requirements.txt --quiet &&
+             python -m app.scrapers.scheduler"
+    depends_on:
+      - postgres
+      - redis
+      - qdrant
+      - minio
+    env_file:
+      - .env
+    environment:
+      - RUN_ON_START=false
+    networks:
+      - internal
+    restart: always
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: fbrbot_cloudflared
+    volumes:
+      - ./cloudflared-config.yml:/etc/cloudflared/config.yml
+      - ./.cloudflared:/etc/cloudflared/creds:ro
+    command: tunnel --no-autoupdate --protocol http2 --config /etc/cloudflared/config.yml run
+    depends_on:
+      - api
+      - frontend
+    networks:
+      - internal
+    restart: always
+
+networks:
+  internal:
+    name: fbrbot_internal
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  qdrant_data:
+  minio_data:
+  pip_cache:

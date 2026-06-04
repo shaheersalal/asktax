@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firm Registration — AskTax.pk</title>
+<meta name="description" content="Register your CA firm on AskTax.pk — AI-powered Pakistani tax assistant for chartered accountants and tax consultants. Manage your team, share research, collaborate.">
+<meta property="og:title" content="Firm Registration — AskTax.pk">
+<meta property="og:description" content="Register your CA firm for AI-powered Pakistani tax research.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://asktax.pk/firm_signup.html">
+<link rel="canonical" href="https://asktax.pk/firm_signup.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f0d;--surface:#111a15;--surface2:#162019;--border:#1e2e22;--border2:#243329;--green:#00e87a;--green-dim:#00b85f;--green-subtle:rgba(0,232,122,0.06);--text:#e8f0eb;--text-dim:#8fa897;--text-muted:#4a6354;--red:#ff4d4d;--radius:12px;}
+[data-theme="light"]{--bg:#f5f7f5;--surface:#fff;--surface2:#eef3ef;--border:#d4e2d8;--green:#00a854;--green-dim:#007a3d;--text:#1a2e1f;--text-dim:#3d6147;--text-muted:#7a9e82;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+.hidden{display:none!important;}
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-size:18px;font-weight:700;text-decoration:none;color:var(--text);}
+.logo span{color:var(--green);}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 24px;}
+.signup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;width:100%;max-width:520px;}
+.signup-card h1{font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:6px;}
+.signup-card p{font-size:13px;color:var(--text-dim);margin-bottom:28px;line-height:1.6;}
+.divider{height:1px;background:var(--border);margin:20px 0;}
+.section-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;font-family:'IBM Plex Mono',monospace;margin-bottom:14px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-group{margin-bottom:14px;}
+.form-label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.form-input{width:100%;padding:11px 14px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:8px;font-family:inherit;font-size:14px;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--green);}
+.form-input::placeholder{color:var(--text-muted);}
+.btn{width:100%;padding:13px;background:var(--green);color:#000;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:0.2s;margin-top:8px;}
+.btn:hover{background:var(--green-dim);}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+.error{color:var(--red);font-size:12px;margin-top:8px;text-align:center;}
+.perks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px;}
+.perk{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:12px;color:var(--text-dim);}
+.perk strong{color:var(--text);display:block;margin-bottom:2px;}
+@media(max-width:520px){.form-row{grid-template-columns:1fr;}.perks{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="/"><span>Ask</span>Tax.pk</a>
+  <a href="index.html" style="padding:6px 14px;background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-dim);font-size:12px;font-weight:500;text-decoration:none;transition:all 0.2s;">← Back to AskTax.pk</a>
+  <a href="firm_dashboard.html" style="font-size:13px;color:var(--text-muted);">Already registered? Sign in →</a>
+</header>
+<div class="main">
+  <div class="signup-card">
+    <h1>Register Your Firm</h1>
+    <p>Get your entire team on AskTax.pk. 30-day free trial, no credit card required.</p>
+
+    <div class="perks">
+      <div class="perk"><strong>30-Day Free Trial</strong>Full access, cancel anytime</div>
+      <div class="perk"><strong>5 Seats Included</strong>Add your whole team</div>
+      <div class="perk"><strong>200 Queries/Seat</strong>Per month per user</div>
+      <div class="perk"><strong>Shared History</strong>All queries saved</div>
+    </div>
+
+    <div class="section-label">Firm Details</div>
+    <div class="form-group">
+      <label class="form-label">Firm Name *</label>
+      <input class="form-input" id="firmName" type="text" placeholder="Your firm name">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Billing Email *</label>
+        <input class="form-input" id="billingEmail" type="email" placeholder="billing@firm.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input class="form-input" id="phone" type="tel" placeholder="03xx-xxxxxxx">
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Your Account (Firm Owner)</div>
+
+    <div class="form-group">
+      <label class="form-label">Your Name</label>
+      <input class="form-input" id="ownerName" type="text" placeholder="Full name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Your Email *</label>
+      <input class="form-input" id="ownerEmail" type="email" placeholder="you@firm.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password *</label>
+      <input class="form-input" id="ownerPassword" type="password" placeholder="Min 8 characters" autocomplete="new-password">
+    </div>
+
+    <button class="btn" id="submitBtn" onclick="registerFirm()">Start Free Trial →</button>
+    <div class="error hidden" id="errorMsg"></div>
+    <div style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:12px;">
+      By registering you agree to our <a href="terms.html" style="color:var(--green);">Terms of Service</a>. No spam, cancel anytime.
+    </div>
+
+    <div id="successState" class="hidden" style="text-align:center;padding:24px 0 8px;">
+      <div style="font-size:36px;margin-bottom:10px;">🎉</div>
+      <p style="font-size:15px;font-weight:600;color:var(--green);margin-bottom:6px;">Firm registered!</p>
+      <p style="font-size:13px;color:var(--text-dim);">Your 30-day free trial is active. Taking you to your dashboard…</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' ? 'http://localhost:8002/api' : 'https://api.asktax.pk/api';
+
+async function registerFirm() {
+  const firmName = document.getElementById('firmName').value.trim();
+  const billingEmail = document.getElementById('billingEmail').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const ownerName = document.getElementById('ownerName').value.trim();
+  const ownerEmail = document.getElementById('ownerEmail').value.trim();
+  const ownerPassword = document.getElementById('ownerPassword').value;
+  const errEl = document.getElementById('errorMsg');
+  const btn = document.getElementById('submitBtn');
+
+  errEl.classList.add('hidden');
+
+  if (!firmName) { showErr('Firm name is required'); return; }
+  if (!ownerEmail) { showErr('Your email is required'); return; }
+  if (!ownerPassword || ownerPassword.length < 8) { showErr('Password must be at least 8 characters'); return; }
+
+  btn.disabled = true; btn.textContent = 'Creating account...';
+
+  try {
+    const res = await fetch(`${API}/firm/register`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        name: firmName,
+        billing_email: billingEmail || ownerEmail,
+        phone,
+        owner_email: ownerEmail,
+        owner_password: ownerPassword,
+        owner_name: ownerName,
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) { showErr(data.detail || 'Registration failed'); return; }
+
+    localStorage.setItem('firm_token', data.access_token);
+    document.getElementById('submitBtn').classList.add('hidden');
+    document.getElementById('successState').classList.remove('hidden');
+    setTimeout(() => { window.location.href = 'firm_dashboard.html'; }, 2000);
+  } catch(e) {
+    showErr('Connection error. Please try again.');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Start Free Trial →';
+  }
+}
+
+function showErr(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.remove('hidden');
+}
+</script>
+</body>
+</html>

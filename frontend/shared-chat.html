@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shared Chat — AskTax.pk</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Cormorant+Garamond:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Nastaliq+Urdu:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#0a0f0d;--surface:#111a15;--surface2:#162019;--border:#1e2e22;--border2:#243329;
+  --green:#00e87a;--green-dim:#00b85f;--green-subtle:rgba(0,232,122,0.06);
+  --text:#e8f0eb;--text-dim:#8fa897;--text-muted:#4a6354;--urdu:#a8d4b8;
+  --red:#ff4d4d;--radius:12px;
+}
+[data-theme="light"]{
+  --bg:#f5f7f5;--surface:#fff;--surface2:#eef3ef;--border:#d4e2d8;--border2:#c8dccf;
+  --green:#00a854;--green-dim:#007a3d;--green-subtle:rgba(0,168,84,0.06);
+  --text:#1a2e1f;--text-dim:#3d6147;--text-muted:#7a9e82;--urdu:#2d5e35;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+.header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);}
+.logo-icon{width:28px;height:28px;}
+.logo-text{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:700;color:var(--text);}
+.logo-text span{color:var(--green);}
+.header-right{display:flex;align-items:center;gap:8px;}
+.cta-btn{padding:8px 18px;background:var(--green);border:none;border-radius:20px;color:#000;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:none;transition:all 0.2s;}
+.cta-btn:hover{background:var(--green-dim);}
+.theme-btn{background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-muted);padding:4px 6px;border-radius:50%;}
+
+.main{max-width:720px;margin:0 auto;padding:40px 24px 80px;}
+
+.shared-banner{background:var(--surface);border:1px solid rgba(0,232,122,0.2);border-radius:var(--radius);padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;gap:12px;}
+.shared-icon{font-size:20px;flex-shrink:0;}
+.shared-info{flex:1;}
+.shared-label{font-size:11px;font-family:'IBM Plex Mono',monospace;color:var(--green);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.shared-by{font-size:13px;color:var(--text-dim);}
+
+.chat-title-h{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.3;}
+.chat-date{font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-bottom:32px;}
+
+.message{display:flex;gap:14px;margin-bottom:28px;}
+.message.user{flex-direction:row-reverse;}
+.msg-avatar{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;margin-top:2px;}
+.message.user .msg-avatar{background:var(--surface2);border:1px solid var(--border2);}
+.message.bot .msg-avatar{background:var(--surface2);border:1px solid var(--border2);}
+.msg-content{flex:1;min-width:0;}
+.msg-label{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.msg-bubble{padding:16px 20px;border-radius:var(--radius);font-size:14px;line-height:1.8;white-space:pre-wrap;}
+.message.user .msg-bubble{background:var(--surface2);border:1px solid var(--border2);border-top-right-radius:4px;}
+.message.bot .msg-bubble{background:var(--surface);border:1px solid var(--border);border-top-left-radius:4px;}
+.conf-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-family:'IBM Plex Mono',monospace;padding:3px 9px;border-radius:20px;margin-top:10px;}
+.conf-high{background:rgba(0,232,122,0.1);color:#00e87a;border:1px solid rgba(0,232,122,0.25);}
+.conf-mid{background:rgba(245,197,24,0.1);color:#f5c518;border:1px solid rgba(245,197,24,0.25);}
+.conf-low{background:rgba(255,77,77,0.1);color:#ff4d4d;border:1px solid rgba(255,77,77,0.25);}
+.urdu-section{margin-top:14px;border-top:1px solid var(--border);padding-top:12px;}
+.urdu-label{font-size:10px;font-family:'IBM Plex Mono',monospace;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.urdu-text{color:var(--urdu);direction:rtl;text-align:right;font-size:16px;line-height:2.2;font-family:'Noto Nastaliq Urdu',serif;white-space:pre-wrap;}
+
+.copy-share-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;background:var(--surface);border:1px solid var(--border2);border-radius:8px;color:var(--text-dim);font-size:12px;cursor:pointer;font-family:inherit;transition:all 0.2s;margin-bottom:24px;}
+.copy-share-btn:hover{border-color:var(--green);color:var(--green);}
+
+.loading{text-align:center;padding:80px 24px;color:var(--text-muted);font-size:14px;}
+.error{text-align:center;padding:80px 24px;color:var(--red);font-size:14px;}
+.footer-cta{margin-top:48px;text-align:center;padding:32px 24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);}
+.footer-cta h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;margin-bottom:8px;}
+.footer-cta p{font-size:13px;color:var(--text-dim);margin-bottom:16px;}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="index.html">
+    <img src="favicon.svg" alt="" class="logo-icon">
+    <span class="logo-text"><span>Ask</span>Tax.pk</span>
+  </a>
+  <div class="header-right">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <a class="cta-btn" href="index.html">Try AskTax →</a>
+  </div>
+</header>
+
+<main class="main" id="main">
+  <div class="loading" id="loadingEl">Loading shared chat…</div>
+</main>
+
+<script>
+const IS_LOCAL = window.location.hostname === 'localhost';
+const API_BASE = IS_LOCAL ? 'http://localhost:8002/api' : 'https://api.asktax.pk/api';
+let isDark = localStorage.getItem('theme') !== 'light';
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.getElementById('themeBtn').textContent = isDark ? '🌙' : '☀️';
+}
+function toggleTheme() { isDark = !isDark; localStorage.setItem('theme', isDark ? 'dark' : 'light'); applyTheme(); }
+applyTheme();
+
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  return new Date(iso).toLocaleDateString('en-PK', {weekday:'long', day:'2-digit', month:'long', year:'numeric'});
+}
+function confBadge(score) {
+  if (score === null || score === undefined) return '';
+  const pct = Math.round(score * 100);
+  if (pct >= 50) return `<div class="conf-badge conf-high"><span style="width:6px;height:6px;border-radius:50%;background:#00e87a;display:inline-block;"></span>${pct}% · High Confidence</div>`;
+  if (pct >= 30) return `<div class="conf-badge conf-mid"><span style="width:6px;height:6px;border-radius:50%;background:#f5c518;display:inline-block;"></span>${pct}% · Moderate — Verify with FBR</div>`;
+  return `<div class="conf-badge conf-low"><span style="width:6px;height:6px;border-radius:50%;background:#ff4d4d;display:inline-block;"></span>${pct}% · Low Confidence — Verify with FBR</div>`;
+}
+
+async function loadSharedChat() {
+  const params = new URLSearchParams(window.location.search);
+  const shareToken = params.get('token');
+  if (!shareToken) {
+    document.getElementById('main').innerHTML = '<div class="error">No share token provided.</div>';
+    return;
+  }
+  try {
+    const res = await fetch(`${API_BASE}/shared/${encodeURIComponent(shareToken)}`);
+    if (!res.ok) {
+      document.getElementById('main').innerHTML = `<div class="error">This shared chat is no longer available or the link has been revoked.</div>`;
+      return;
+    }
+    const chat = await res.json();
+    renderChat(chat);
+  } catch(e) {
+    document.getElementById('main').innerHTML = '<div class="error">Could not load the shared chat. Please try again.</div>';
+  }
+}
+
+function renderChat(chat) {
+  const shareUrl = window.location.href;
+  const main = document.getElementById('main');
+  const urduSection = chat.response_ur && chat.response_ur.trim() && chat.response_ur !== chat.response_en
+    ? `<div class="urdu-section"><div class="urdu-label">اردو</div><div class="urdu-text">${esc(chat.response_ur)}</div></div>`
+    : '';
+  main.innerHTML = `
+    <div class="shared-banner">
+      <div class="shared-icon">🔗</div>
+      <div class="shared-info">
+        <div class="shared-label">Shared Chat · AskTax.pk</div>
+        <div class="shared-by">Shared by ${esc(chat.shared_by)}</div>
+      </div>
+    </div>
+    <div class="chat-title-h">${esc(chat.title)}</div>
+    <div class="chat-date">${fmtDate(chat.created_at)}</div>
+    <button class="copy-share-btn" onclick="copyLink()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+      Copy Link
+    </button>
+    <div class="message user">
+      <div class="msg-avatar">❓</div>
+      <div class="msg-content">
+        <div class="msg-label">Question</div>
+        <div class="msg-bubble">${esc(chat.query)}</div>
+      </div>
+    </div>
+    <div class="message bot">
+      <div class="msg-avatar"><img src="favicon.svg" style="width:18px;height:18px;" alt="AskTax"></div>
+      <div class="msg-content">
+        <div class="msg-label">AskTax.pk Answer</div>
+        <div class="msg-bubble">
+          ${esc(chat.response_en)}
+          ${confBadge(chat.confidence_score)}
+          ${urduSection}
+        </div>
+      </div>
+    </div>
+    <div class="footer-cta">
+      <h3>Have a tax question?</h3>
+      <p>Ask AskTax.pk — Pakistan's AI tax assistant powered by FBR documents.</p>
+      <a class="cta-btn" href="index.html" style="display:inline-block;">Ask Your Question →</a>
+    </div>
+  `;
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.querySelector('.copy-share-btn');
+    if (btn) { btn.textContent = '✓ Link Copied!'; setTimeout(() => { btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Copy Link'; }, 2000); }
+  });
+}
+
+loadSharedChat();
+</script>
+</body>
+</html>

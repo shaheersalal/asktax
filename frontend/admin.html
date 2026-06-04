@@ -1,0 +1,1980 @@
+﻿<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AskTax Admin</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0a0f0d;--surface:#111a15;--surface2:#162019;--border:#1e2e22;
+  --green:#00e87a;--green-dim:#00b85f;--red:#ff4d4d;--yellow:#f5c518;
+  --text:#e8f0eb;--text-dim:#8fa897;--text-muted:#4a6354;--radius:12px;
+}
+[data-theme="light"] {
+  --bg:#f5f7f5;--surface:#ffffff;--surface2:#eef3ef;--border:#d4e2d8;
+  --green:#00a854;--green-dim:#007a3d;--red:#cc0000;--yellow:#b8860b;
+  --text:#1a2e1f;--text-dim:#3d6147;--text-muted:#7a9e82;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;transition:background 0.2s,color 0.2s;}
+a{color:var(--green);text-decoration:none;}
+
+/* LOGIN */
+#loginOverlay{position:fixed;inset:0;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;z-index:1000;}
+[data-theme="light"] #loginOverlay{background:rgba(0,0,0,0.45);}
+.login-box{background:var(--surface);padding:40px;border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:420px;}
+.login-box h2{font-size:22px;margin-bottom:6px;}
+.login-box p{font-size:13px;color:var(--text-dim);margin-bottom:24px;}
+.form-input{width:100%;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;margin-bottom:14px;outline:none;font-family:inherit;font-size:14px;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--green);}
+.btn{padding:11px 20px;background:var(--green);color:#000;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:14px;transition:0.2s;}
+.btn:hover{background:var(--green-dim);}
+.btn-full{width:100%;}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:6px;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-red:hover{opacity:0.85;}
+.btn-outline{background:transparent;border:1px solid var(--green);color:var(--green);}
+.btn-outline:hover{background:var(--green);color:#000;}
+.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text-dim);}
+.btn-ghost:hover{border-color:var(--text-dim);color:var(--text);}
+
+/* TOPBAR */
+#dashboard{display:none;}
+.topbar{position:sticky;top:0;z-index:100;background:var(--surface);border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;transition:background 0.2s;}
+.topbar-logo{font-size:18px;font-weight:700;color:var(--text);}
+.topbar-logo span{color:var(--green);}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.role-badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;}
+.role-owner{background:rgba(0,232,122,0.15);color:var(--green);}
+.role-assistant{background:rgba(245,197,24,0.15);color:var(--yellow);}
+.theme-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:0.2s;}
+.theme-btn:hover{border-color:var(--green);}
+
+/* PAGE */
+.page{padding:32px;max-width:1400px;margin:0 auto;}
+
+/* SECTION */
+.section-block{margin-bottom:48px;}
+.section-heading{display:flex;align-items:center;gap:14px;margin-bottom:24px;}
+.section-label{font-size:11px;color:var(--green);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:2px;white-space:nowrap;}
+.section-line{flex:1;height:1px;background:var(--border);}
+
+/* STAT CARDS */
+.sub-label{font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:20px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;transition:background 0.2s;}
+.stat-label{font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:6px;}
+.stat-value{font-size:28px;font-weight:700;color:var(--green);}
+.stat-sub{font-size:11px;color:var(--text-muted);margin-top:4px;}
+
+/* TABLE */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:background 0.2s;}
+.table-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.table-title{font-size:15px;font-weight:600;}
+.search-input{padding:8px 12px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;font-size:13px;outline:none;font-family:inherit;width:240px;transition:border-color 0.2s;}
+.search-input:focus{border-color:var(--green);}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);font-size:13px;white-space:nowrap;}
+th{color:var(--text-muted);font-weight:500;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;background:var(--surface2);}
+tr:last-child td{border-bottom:none;}
+tr.highlight-green{background:rgba(0,232,122,0.08);transition:background 1s;}
+tr:hover td{background:rgba(128,128,128,0.04);}
+select.inline-select{padding:5px 8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;font-size:12px;outline:none;}
+
+/* BADGES */
+.badge{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;}
+.badge-free{background:rgba(128,128,128,0.15);color:var(--text-muted);}
+.badge-basic{background:rgba(0,232,122,0.15);color:var(--green);}
+.badge-professional{background:var(--green);color:#000;}
+.badge-active{background:rgba(0,232,122,0.1);color:var(--green);}
+.badge-blocked{background:rgba(255,77,77,0.15);color:var(--red);}
+.badge-temp{background:rgba(245,197,24,0.15);color:var(--yellow);}
+.badge-owner{background:rgba(0,232,122,0.2);color:var(--green);border:1px solid rgba(0,232,122,0.3);}
+.badge-assistant{background:rgba(245,197,24,0.15);color:var(--yellow);}
+
+/* TOOLTIP */
+.tooltip-wrap{position:relative;display:inline-block;}
+.tooltip-box{display:none;position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:12px;z-index:100;min-width:200px;max-width:320px;white-space:normal;word-break:break-all;}
+.tooltip-box .trow{display:flex;justify-content:space-between;gap:16px;margin-bottom:4px;}
+.tooltip-box .trow:last-child{margin-bottom:0;}
+.tooltip-box .tlabel{color:var(--text-muted);white-space:nowrap;}
+.tooltip-box .tval{color:var(--green);font-family:'IBM Plex Mono',monospace;}
+.tooltip-wrap:hover .tooltip-box{display:block;}
+.query-tag{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--text-dim);cursor:pointer;transition:0.2s;}
+.query-tag:hover{border-color:var(--green);color:var(--green);}
+
+/* IP BAR */
+.ip-bar{display:flex;align-items:center;height:6px;background:var(--surface2);border-radius:4px;overflow:hidden;min-width:80px;}
+.ip-bar-fill{height:100%;border-radius:4px;transition:width 0.4s;}
+
+/* PASSWORD SECTION */
+.pwd-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:16px;flex-wrap:wrap;}
+.pwd-input-wrap{flex:1;min-width:220px;}
+.pwd-hint{font-size:11px;color:var(--text-muted);margin-top:5px;font-family:'IBM Plex Mono',monospace;}
+.pwd-hint .role-preview{font-weight:700;}
+.pwd-hint .role-preview.owner{color:var(--green);}
+.pwd-hint .role-preview.assistant{color:var(--yellow);}
+.pwd-list{display:flex;flex-direction:column;gap:8px;}
+.pwd-item{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px 14px;}
+.pwd-item-key{font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--text);flex:1;}
+.pwd-item-role{font-size:11px;}
+
+/* SESSION SECTION */
+.session-stat{display:inline-flex;flex-direction:column;align-items:center;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;min-width:80px;}
+.session-stat-val{font-size:18px;font-weight:700;color:var(--green);font-family:'IBM Plex Mono',monospace;}
+.session-stat-lbl{font-size:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+.clicks-list{font-size:11px;color:var(--text-dim);line-height:1.8;font-family:'IBM Plex Mono',monospace;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:500;padding:24px;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;width:100%;max-width:480px;position:relative;}
+.modal h3{font-size:18px;margin-bottom:16px;}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:2px 6px;}
+.modal-close:hover{color:var(--text);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.form-group{margin-bottom:14px;}
+.form-label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.form-actions{display:flex;gap:10px;margin-top:20px;}
+
+/* CONFIRM */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:600;}
+.confirm-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;width:100%;max-width:380px;text-align:center;}
+.confirm-box h3{margin-bottom:10px;font-size:17px;}
+.confirm-box p{font-size:13px;color:var(--text-dim);margin-bottom:24px;line-height:1.6;}
+.confirm-actions{display:flex;gap:10px;justify-content:center;}
+
+/* PAYMENT */
+.payment-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;display:flex;align-items:flex-start;gap:14px;margin-bottom:12px;}
+.payment-receipt{width:60px;height:60px;object-fit:cover;border-radius:6px;border:1px solid var(--border);cursor:pointer;}
+.payment-receipt-placeholder{width:60px;height:60px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.payment-info{flex:1;}
+.payment-name{font-weight:600;font-size:14px;cursor:pointer;}
+.payment-name:hover{color:var(--green);}
+.payment-meta{font-size:12px;color:var(--text-dim);margin-top:4px;}
+
+/* ACTIVITY */
+.activity-row{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.activity-row:last-child{border-bottom:none;}
+.activity-time{color:var(--text-muted);font-family:'IBM Plex Mono',monospace;font-size:11px;white-space:nowrap;min-width:140px;}
+.activity-action{color:var(--green);font-weight:500;}
+.activity-detail{color:var(--text-dim);}
+
+.hidden{display:none!important;}
+
+/* MESSAGES */
+.msg-layout{display:grid;grid-template-columns:280px 1fr;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;min-height:440px;}
+.msg-sidebar{border-right:1px solid var(--border);overflow-y:auto;max-height:560px;}
+.msg-user-item{padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;}
+.msg-user-item:hover,.msg-user-item.active{background:var(--surface2);}
+.msg-user-name{font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;}
+.msg-user-email{font-size:10px;color:var(--text-muted);margin-top:2px;font-family:'IBM Plex Mono',monospace;}
+.msg-user-preview{font-size:11px;color:var(--text-dim);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;}
+.msg-unread-dot{width:7px;height:7px;background:var(--red);border-radius:50%;flex-shrink:0;}
+.msg-thread{display:flex;flex-direction:column;max-height:560px;}
+.msg-thread-header{padding:14px 16px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;color:var(--text);}
+.msg-bubbles{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:260px;max-height:320px;}
+.bubble{max-width:72%;padding:10px 14px;border-radius:12px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;}
+.bubble-admin{background:var(--green);color:#000;align-self:flex-end;border-bottom-right-radius:4px;}
+.bubble-user{background:var(--surface2);border:1px solid var(--border);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px;}
+.bubble-time{font-size:10px;opacity:0.6;margin-top:4px;}
+.msg-reply-area{padding:12px 16px;border-top:1px solid var(--border);}
+.msg-reply-textarea{width:100%;height:72px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 12px;font-family:inherit;font-size:13px;outline:none;resize:none;transition:border-color 0.2s;}
+.msg-reply-textarea:focus{border-color:var(--green);}
+.msg-reply-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.section-badge{display:none;background:var(--red);color:#fff;border-radius:20px;font-size:9px;padding:1px 7px;font-family:'IBM Plex Mono',monospace;font-weight:700;margin-left:4px;vertical-align:middle;}
+
+/* SECTION NAV */
+.section-nav{position:sticky;top:56px;z-index:99;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;transition:background 0.2s;}
+.section-nav::-webkit-scrollbar{display:none;}
+.section-nav-inner{display:flex;gap:2px;padding:7px 32px;min-width:max-content;}
+.snav-item{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:500;color:var(--text-muted);cursor:pointer;border:1px solid transparent;text-decoration:none;transition:color 0.15s,background 0.15s,border-color 0.15s;white-space:nowrap;user-select:none;}
+.snav-item:hover{background:var(--surface2);color:var(--text);border-color:var(--border);}
+.snav-item.snav-active{background:rgba(0,232,122,0.1);color:var(--green);border-color:rgba(0,232,122,0.25);}
+.snav-dot{width:6px;height:6px;background:var(--red);border-radius:50%;flex-shrink:0;animation:pulse 1.8s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.snav-count{min-width:15px;height:15px;background:var(--red);color:#fff;border-radius:20px;font-size:9px;font-weight:700;font-family:'IBM Plex Mono',monospace;display:inline-flex;align-items:center;justify-content:center;padding:0 4px;line-height:1;}
+.snav-count:empty,.snav-dot[data-hide="1"]{display:none;}
+@media(max-width:768px){.section-nav-inner{padding:7px 16px;}}
+
+/* ── COLLAPSIBLE SECTIONS ─────────────────────────────────────────────── */
+.section-heading{cursor:pointer;user-select:none;}
+.section-toggle{width:20px;height:20px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);display:inline-flex;align-items:center;justify-content:center;font-size:9px;color:var(--text-muted);transition:transform 0.2s;flex-shrink:0;margin-left:6px;}
+.section-block.section-collapsed .section-toggle{transform:rotate(-90deg);}
+.section-block.section-collapsed>*:not(.section-heading){display:none!important;}
+.subsection-heading{cursor:pointer;user-select:none;padding:10px 0;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);margin-top:4px;}
+.subsection-label{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:1.5px;}
+#adminMsgBubble{position:fixed;inset:0;z-index:700;background:rgba(0,0,0,0.72);display:none;align-items:center;justify-content:flex-end;padding:16px;}
+#adminMsgBubble.open{display:flex;}
+.msg-bubble-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);width:100%;max-width:500px;height:88vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,0.5);}
+.msg-bubble-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.msg-bubble-body{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;}
+.msg-bubble-suggestions{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;}
+.msg-sugg-chip{padding:5px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--text-dim);cursor:pointer;transition:all 0.15s;white-space:nowrap;font-family:inherit;}
+.msg-sugg-chip:hover{border-color:var(--green);color:var(--green);}
+.msg-bubble-compose{padding:12px;border-top:1px solid var(--border);flex-shrink:0;}
+.bubble-textarea{width:100%;height:68px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:10px 12px;font-family:inherit;font-size:13px;outline:none;resize:none;transition:border-color 0.2s;box-sizing:border-box;}
+.bubble-textarea:focus{border-color:var(--green);}
+.bubble-compose-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.bubble-msg-in{align-self:flex-start;background:var(--surface2);border:1px solid var(--border);border-radius:12px 12px 12px 2px;padding:10px 14px;max-width:85%;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word;}
+.bubble-msg-out{align-self:flex-end;background:rgba(0,232,122,0.12);border:1px solid rgba(0,232,122,0.2);border-radius:12px 12px 2px 12px;padding:10px 14px;max-width:85%;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word;}
+.bubble-msg-time{font-size:10px;color:var(--text-muted);margin-top:3px;}
+@media(max-width:600px){#adminMsgBubble{padding:0;align-items:flex-end;}.msg-bubble-card{max-width:100%;height:92vh;border-radius:var(--radius) var(--radius) 0 0;}}
+
+/* ── MOBILE ───────────────────────────────────────────────────────────── */
+@media(max-width:768px){
+  .page{padding:16px 12px;}
+  .topbar{padding:10px 16px;flex-wrap:wrap;gap:8px;}
+  .topbar-right{gap:6px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .stat-card{padding:14px 12px;}
+  .stat-value{font-size:22px;}
+  .table-header{padding:12px 14px;flex-wrap:wrap;gap:8px;}
+  .search-input{width:100%;box-sizing:border-box;}
+  .table-title{font-size:13px;}
+  th,td{padding:8px 10px;font-size:11px;}
+  .msg-layout{grid-template-columns:1fr!important;}
+  .msg-sidebar{border-right:none;border-bottom:1px solid var(--border);max-height:220px;}
+  .msg-thread{max-height:380px;}
+  .msg-reply-actions{flex-direction:column;}
+  .modal{padding:20px 16px;max-width:calc(100vw - 32px);}
+  .pwd-row{flex-direction:column;}
+  .login-box{padding:28px 20px;margin:16px;}
+  .section-heading{gap:8px;}
+  .confirm-box{padding:24px 18px;margin:12px;}
+}
+@media(max-width:480px){
+  .page{padding:12px 8px;}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:8px;}
+  .stat-card{padding:12px 10px;}
+  .stat-value{font-size:20px;}
+  .topbar-logo{font-size:15px;}
+  .btn{padding:9px 14px;font-size:13px;}
+  .btn-sm{padding:4px 10px;font-size:11px;}
+  .section-label{font-size:10px;}
+  .topbar-right .role-badge{display:none;}
+  [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr!important;}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <h2>AskTax Admin</h2>
+    <p>Enter your admin password to access the dashboard.</p>
+    <form onsubmit="doLogin();return false;" autocomplete="off">
+      <input class="form-input" type="password" id="adminKey" placeholder="Admin password" autocomplete="current-password">
+      <button type="submit" class="btn btn-full">Enter Dashboard</button>
+    </form>
+    <div id="loginErr" style="color:var(--red);font-size:12px;margin-top:10px;text-align:center;"></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-logo"><span>Ask</span>Tax Admin</div>
+    <div class="topbar-right">
+      <span id="roleLabel" class="role-badge"></span>
+      <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+      <button class="btn btn-sm btn-outline" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+
+  <div class="page">
+
+    <!-- REGISTERED USERS -->
+    <div class="section-block" id="section-users">
+      <div class="section-heading">
+        <div class="section-label">Users <span class="section-badge" id="trialPendingBadge"></span></div>
+        <div class="section-line"></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <div class="table-title">All Users</div>
+          <input class="search-input" type="text" placeholder="Search by email or name…" oninput="filterUsers(this.value)">
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Name</th><th>Email</th><th>IP</th><th>Joined</th><th>Queries</th><th>API Cost</th><th>Plan</th><th>Trial Request</th><th>Status</th><th>Actions</th></tr>
+            </thead>
+            <tbody id="userTable"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="users-subsections" style="margin-top:24px;display:flex;flex-direction:column;gap:16px;">
+
+        <!-- MESSAGES -->
+        <div class="section-block" id="section-messages">
+          <div class="section-heading">
+            <div class="section-label">Messages <span class="section-badge" id="msgUnreadBadge"></span></div>
+            <div class="section-line"></div>
+            <button class="btn btn-sm btn-outline" onclick="loadMessages()" data-track="Refresh Messages">↺ Refresh</button>
+          </div>
+          <div class="msg-layout">
+            <!-- Sidebar: conversation list -->
+            <div class="msg-sidebar" id="msgSidebar">
+              <div style="color:var(--text-muted);font-size:13px;padding:20px;">Loading…</div>
+            </div>
+            <!-- Thread view -->
+            <div class="msg-thread">
+              <div class="msg-thread-header" id="msgThreadHeader" style="color:var(--text-muted);">Select a conversation</div>
+              <div class="msg-bubbles" id="msgBubbles">
+                <div style="color:var(--text-muted);font-size:13px;text-align:center;padding-top:40px;">Select a user from the left to view their messages.</div>
+              </div>
+              <div class="msg-reply-area" id="msgReplyArea" style="display:none;">
+                <textarea class="msg-reply-textarea" id="adminReplyInput" placeholder="Type a reply to the user…"></textarea>
+                <div class="msg-reply-actions">
+                  <button class="btn btn-sm" onclick="adminReply()" data-track="Send Admin Reply">Send Reply</button>
+                  <button class="btn btn-sm btn-ghost" onclick="sendPaymentTemplate('Basic')" data-track="Send Payment Template Basic">Send Payment Instructions (Basic)</button>
+                  <button class="btn btn-sm btn-ghost" onclick="sendPaymentTemplate('Pro')" data-track="Send Payment Template Pro">Send Payment Instructions (Pro)</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESTORE REQUESTS -->
+        <div class="section-block" id="section-restore-requests">
+          <div class="section-heading">
+            <div class="section-label">Restore Requests</div>
+            <div class="section-line"></div>
+            <button class="btn btn-sm btn-outline" onclick="loadRestoreRequests()">↺ Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <div class="table-header">
+              <span class="table-title">User requests to restore deleted chats</span>
+              <span id="restoreRequestCount" style="font-size:12px;color:var(--text-muted);"></span>
+            </div>
+            <div id="restoreRequestList" style="padding:20px;"></div>
+          </div>
+        </div>
+
+        <!-- FEEDBACK -->
+        <div class="section-block" id="section-feedback">
+          <div class="section-heading">
+            <div class="section-label">User Feedback</div>
+            <div class="section-line"></div>
+            <button class="btn btn-sm btn-outline" onclick="loadFeedback()">↺ Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <div class="table-header">
+              <span class="table-title">Feedback from users</span>
+              <span id="feedbackCount" style="font-size:12px;color:var(--text-muted);"></span>
+            </div>
+            <div id="feedbackList" style="padding:20px;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- COST -->
+    <div class="section-block" id="section-cost">
+      <div class="section-heading">
+        <div class="section-label">Cost</div>
+        <div class="section-line"></div>
+      </div>
+      <div class="sub-label">API Usage &amp; Cost</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">All-Time Tokens</div><div class="stat-value" id="s-total-tokens">…</div><div class="stat-sub">tokens consumed</div></div>
+        <div class="stat-card"><div class="stat-label">This Month Tokens</div><div class="stat-value" id="s-monthly-tokens">…</div></div>
+        <div class="stat-card"><div class="stat-label">All-Time Cost</div><div class="stat-value" id="s-total-cost">…</div><div class="stat-sub">est. USD</div></div>
+        <div class="stat-card"><div class="stat-label">This Month Cost</div><div class="stat-value" id="s-monthly-cost">…</div></div>
+      </div>
+    </div>
+
+    <!-- DATA -->
+    <div class="section-block" id="section-data">
+      <div class="section-heading">
+        <div class="section-label">Data</div>
+        <div class="section-line"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+
+        <!-- ANALYTICS -->
+        <div class="section-block" id="section-analytics">
+          <div class="section-heading">
+            <div class="section-label">Analytics</div>
+            <div class="section-line"></div>
+          </div>
+          <div class="sub-label">Queries &amp; Users</div>
+          <div class="stats-grid" style="margin-bottom:16px;">
+            <div class="stat-card"><div class="stat-label">Total Queries</div><div class="stat-value" id="s-total-queries">…</div></div>
+            <div class="stat-card"><div class="stat-label">This Month</div><div class="stat-value" id="s-monthly-queries">…</div></div>
+            <div class="stat-card"><div class="stat-label">Total Users</div><div class="stat-value" id="s-total-users">…</div></div>
+          </div>
+        </div>
+
+        <!-- FBR DATA PIPELINE -->
+        <div class="section-block" id="section-pipeline">
+          <div class="section-heading">
+            <div class="section-label">FBR Data</div>
+            <div class="section-line"></div>
+            <button class="btn btn-sm btn-outline" onclick="loadPipelineStats()" data-track="Refresh Pipeline Stats">↺ Refresh</button>
+            <button class="btn btn-sm" id="checkNewBtn" onclick="checkNewData()" data-track="Check for New Data" style="margin-left:4px;">Check for New Data</button>
+          </div>
+          <div class="stats-grid" id="pipelineStatsGrid">
+            <div class="stat-card"><div class="stat-label">Total Documents</div><div class="stat-value" id="ps-total">…</div></div>
+            <div class="stat-card"><div class="stat-label">Indexed in Qdrant</div><div class="stat-value" id="ps-vectors">…</div><div class="stat-sub">vector chunks</div></div>
+            <div class="stat-card"><div class="stat-label">Completed</div><div class="stat-value" id="ps-completed" style="color:var(--green);">…</div></div>
+            <div class="stat-card"><div class="stat-label">Pending</div><div class="stat-value" id="ps-pending" style="color:var(--yellow);">…</div></div>
+            <div class="stat-card"><div class="stat-label">Failed</div><div class="stat-value" id="ps-failed" style="color:var(--red);">…</div></div>
+          </div>
+
+          <!-- Pipeline notice — shown when stats are 0 or qdrant has errors -->
+          <div id="pipelineNotice" style="display:none;margin-top:-4px;margin-bottom:16px;padding:12px 16px;background:rgba(245,197,24,0.07);border:1px solid rgba(245,197,24,0.25);border-radius:8px;font-size:13px;color:var(--yellow);line-height:1.6;"></div>
+
+          <!-- Check result bar — hidden until check runs -->
+          <div id="checkResultBar" style="display:none;margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+              <div>
+                <div style="font-size:15px;font-weight:600;" id="checkResultTitle">—</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" id="checkResultSub">—</div>
+              </div>
+              <div style="display:flex;gap:10px;" id="checkResultActions"></div>
+            </div>
+            <div id="checkResultCategories" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;"></div>
+          </div>
+        </div>
+
+        <!-- UPLOAD DOCUMENT -->
+        <div class="section-block owner-only hidden" id="section-upload-doc">
+          <div class="section-heading">
+            <div class="section-label">Upload Document</div>
+            <div class="section-line"></div>
+          </div>
+          <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+            <div style="font-size:13px;color:var(--text-muted);margin-bottom:18px;line-height:1.6;">
+              Upload a PDF directly into the knowledge base. Useful for case law judgments, Finance Acts, or any document not available on FBR's website. The file is saved to storage and embedded automatically.
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+              <div style="grid-column:1/-1;">
+                <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Document Title *</label>
+                <input id="uploadDocTitle" type="text" placeholder="e.g. Finance Act 2023 (Full Text)" style="width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;" />
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Category *</label>
+                <select id="uploadDocCategory" style="width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;">
+                  <option value="">— select category —</option>
+                  <optgroup label="Case Law">
+                    <option value="case_law">Case Law / Judgment</option>
+                  </optgroup>
+                  <optgroup label="Income Tax">
+                    <option value="income_tax_ordinance">Income Tax Ordinance</option>
+                    <option value="income_tax_rules">Income Tax Rules</option>
+                    <option value="circular_income_tax">Circular (Income Tax)</option>
+                    <option value="sro_income_tax">SRO (Income Tax)</option>
+                  </optgroup>
+                  <optgroup label="Sales Tax">
+                    <option value="sales_tax_act">Sales Tax Act</option>
+                    <option value="sales_tax_rules">Sales Tax Rules</option>
+                    <option value="circular_sales_tax">Circular (Sales Tax)</option>
+                    <option value="sro_sales_tax">SRO (Sales Tax)</option>
+                  </optgroup>
+                  <optgroup label="Federal Excise">
+                    <option value="federal_excise_act">Federal Excise Act</option>
+                    <option value="federal_excise_rules">Federal Excise Rules</option>
+                    <option value="circular_federal_excise">Circular (Federal Excise)</option>
+                    <option value="sro_federal_excise">SRO (Federal Excise)</option>
+                  </optgroup>
+                  <optgroup label="Customs">
+                    <option value="customs_act">Customs Act / Tariff</option>
+                    <option value="customs_rules">Customs Rules</option>
+                    <option value="circular_customs">Circular (Customs)</option>
+                    <option value="sro_customs">SRO (Customs)</option>
+                  </optgroup>
+                  <optgroup label="Other">
+                    <option value="finance_act">Finance Act</option>
+                    <option value="press_release">Press Release</option>
+                    <option value="sro">SRO (General)</option>
+                    <option value="circular">Circular (General)</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Document Date</label>
+                <input id="uploadDocDate" type="date" style="width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;" />
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Circular / SRO Number</label>
+                <input id="uploadDocCircular" type="text" placeholder="e.g. C.No.1(5)ITP/2024" style="width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;" />
+              </div>
+              <div>
+                <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;">Fiscal Year</label>
+                <input id="uploadDocFY" type="text" placeholder="e.g. 2024-25" style="width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;" />
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <input type="file" id="uploadDocFile" accept=".pdf" style="display:none;" onchange="handleDocUpload(this)" />
+              <button class="btn btn-sm" onclick="document.getElementById('uploadDocFile').click()" data-track="Upload Document">Choose PDF &amp; Upload</button>
+              <span id="uploadDocStatus" style="font-size:13px;color:var(--text-muted);"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- BACKUP -->
+        <div class="section-block owner-only hidden" id="section-backup">
+          <div class="section-heading">
+            <div class="section-label">Backup</div>
+            <div class="section-line"></div>
+            <button class="btn btn-sm btn-outline" onclick="loadBackupStatus()" data-track="Refresh Backup">↺ Refresh</button>
+            <button class="btn btn-sm" id="backupBtn" onclick="runBackup()" data-track="Run Backup" style="margin-left:4px;">Backup Now</button>
+          </div>
+
+          <!-- Last backup summary -->
+          <div id="backupSummary" style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px;">
+            <div style="color:var(--text-muted);font-size:13px;">Loading backup status…</div>
+          </div>
+
+          <!-- What changed since last backup -->
+          <div id="backupDiff" style="display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;">
+            <div style="font-size:12px;color:var(--text-muted);margin-bottom:12px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:1px;">New since last backup</div>
+            <div id="backupDiffContent" style="display:flex;gap:24px;flex-wrap:wrap;"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ACTIVITY LOG (owner only) -->
+    <div class="section-block owner-only hidden" id="section-activity">
+      <div class="section-heading">
+        <div class="section-label">Activity Log</div>
+        <div class="section-line"></div>
+      </div>
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">
+        Every admin action is recorded here — user upgrades, blocks, payments, password creation, and pipeline runs. Use this to audit what each admin or assistant did and when.
+      </div>
+      <div class="table-wrap">
+        <div style="padding:20px;" id="activityList"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-top:16px;">
+
+        <!-- ASSISTANT SESSIONS (owner only) -->
+        <div class="section-block owner-only hidden" id="section-sessions">
+          <div class="section-heading">
+            <div class="section-label">Assistant Sessions</div>
+            <div class="section-line"></div>
+            <button class="btn btn-sm btn-outline" onclick="loadSessions()" data-track="Refresh Sessions">↺ Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <div class="table-header">
+              <div class="table-title">Login History &amp; Activity</div>
+              <div style="font-size:12px;color:var(--text-muted);">Last 7 days · Heartbeat every 30s</div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead>
+                  <tr><th>Role</th><th>Password (hint)</th><th>IP Address</th><th>Login Time</th><th>Duration</th><th>Active</th><th>Idle</th><th>Tab Hidden</th><th>Clicks</th></tr>
+                </thead>
+                <tbody id="sessionTable"><tr><td colspan="9" style="color:var(--text-muted);text-align:center;padding:20px;">Loading…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANONYMOUS IPs -->
+        <div class="section-block" id="section-ips">
+          <div class="section-heading">
+            <div class="section-label">Anonymous IPs</div>
+            <div class="section-line"></div>
+            <button class="btn btn-sm btn-outline" onclick="loadIpStats()" data-track="Refresh IPs">↺ Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <div class="table-header">
+              <div class="table-title">Guest Query Usage</div>
+              <div style="font-size:12px;color:var(--text-muted);">Free limit: 20 queries · 30-day window</div>
+            </div>
+            <div style="overflow-x:auto;">
+              <table>
+                <thead><tr><th>IP Address</th><th>Queries Used</th><th>Usage</th><th>First Seen</th><th>Last Seen</th><th>API Cost</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="ipTable"><tr><td colspan="8" style="color:var(--text-muted);text-align:center;padding:20px;">Loading…</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PASSWORD MANAGER (owner only) -->
+    <div class="section-block owner-only hidden" id="section-passwords">
+      <div class="section-heading">
+        <div class="section-label">Password Manager</div>
+        <div class="section-line"></div>
+      </div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+        <div style="font-size:13px;color:var(--text-dim);margin-bottom:16px;line-height:1.6;">
+          Create passwords for assistants. The first 3 letters set the role:
+          <span style="color:var(--green);font-family:'IBM Plex Mono',monospace;font-weight:600;">own…</span> → Owner &nbsp;·&nbsp;
+          <span style="color:var(--yellow);font-family:'IBM Plex Mono',monospace;font-weight:600;">any other prefix</span> → Assistant
+        </div>
+        <div class="pwd-row">
+          <div class="pwd-input-wrap">
+            <div style="display:flex;gap:8px;margin-bottom:6px;">
+              <input class="form-input" type="text" id="newPwdInput" placeholder="e.g. ast_london2026" oninput="previewPwdRole(this.value)" style="margin-bottom:0;flex:1;">
+              <button class="btn btn-sm btn-outline" onclick="generatePassword()" type="button" style="white-space:nowrap;">⚡ Generate</button>
+            </div>
+            <div class="pwd-hint">Role: <span class="role-preview" id="pwdRolePreview">—</span></div>
+          </div>
+          <button class="btn" onclick="createPassword()" data-track="Create Password" style="align-self:flex-start;margin-top:2px;">Create</button>
+        </div>
+        <div id="pwdList" class="pwd-list"></div>
+      </div>
+    </div>
+
+    <!-- TRIAL REQUESTS -->
+
+  </div>
+</div>
+
+<!-- ADMIN MSG BUBBLE -->
+<div id="adminMsgBubble">
+  <div class="msg-bubble-card">
+    <div class="msg-bubble-header">
+      <div>
+        <div id="bubbleUserName" style="font-weight:600;font-size:14px;"></div>
+        <div id="bubbleUserEmail" style="font-size:11px;color:var(--text-muted);"></div>
+      </div>
+      <button onclick="closeAdminMsgBubble()" style="background:none;border:none;color:var(--text-muted);font-size:22px;cursor:pointer;padding:4px 8px;line-height:1;">✕</button>
+    </div>
+    <div class="msg-bubble-body" id="bubbleMsgs"></div>
+    <div class="msg-bubble-suggestions" id="bubbleSuggestions"></div>
+    <div class="msg-bubble-compose">
+      <textarea class="bubble-textarea" id="bubbleReplyInput" placeholder="Write a message…"></textarea>
+      <div class="bubble-compose-row">
+        <button class="btn btn-sm btn-ghost" onclick="applyBubblePaymentTemplate('Basic')">Payment (Basic)</button>
+        <button class="btn btn-sm btn-ghost" onclick="applyBubblePaymentTemplate('Pro')">Payment (Pro)</button>
+        <button class="btn" onclick="sendBubbleReply()" style="margin-left:auto;padding:8px 20px;">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="confirm-overlay hidden" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3 id="confirmTitle">Are you sure?</h3>
+    <p id="confirmMsg"></p>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" onclick="cancelConfirm()">Cancel</button>
+      <button class="btn btn-red" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay hidden" id="paymentModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePaymentModal()">✕</button>
+    <h3>Add Payment Record</h3>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">User ID</label><input class="form-input" id="p-userid" type="number" placeholder="User ID"></div>
+      <div class="form-group"><label class="form-label">User Name</label><input class="form-input" id="p-username" type="text" placeholder="Full name"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Amount (PKR)</label><input class="form-input" id="p-amount" type="number" placeholder="2999"></div>
+      <div class="form-group"><label class="form-label">Method</label>
+        <select class="form-input inline-select" id="p-method" style="padding:12px;"><option>JazzCash</option><option>EasyPaisa</option><option>Bank Transfer</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Plan</label>
+      <select class="form-input inline-select" id="p-plan" style="padding:12px;"><option value="basic">Basic — PKR 2,999</option><option value="professional">Pro — PKR 5,999</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Notes</label><input class="form-input" id="p-notes" type="text" placeholder="Optional notes"></div>
+    <div class="form-group"><label class="form-label">Receipt Image</label><input class="form-input" id="p-receipt" type="file" accept="image/*" style="padding:10px;"></div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="closePaymentModal()">Cancel</button>
+      <button class="btn" onclick="submitPayment()">Save Payment</button>
+    </div>
+  </div>
+</div>
+
+<!-- REJECT TRIAL MODAL -->
+<div class="modal-overlay hidden" id="rejectTrialModal">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('rejectTrialModal').classList.add('hidden')">✕</button>
+    <h3>Reject Trial Request</h3>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:16px;">Rejecting request for <strong id="rejectTrialName"></strong>. A notification will be sent to the user.</p>
+    <div class="form-group">
+      <label class="form-label">Reason (optional)</label>
+      <textarea class="form-input" id="rejectTrialReason" placeholder="e.g. Please send payment first, then we will activate your account…" style="resize:none;height:80px;"></textarea>
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="document.getElementById('rejectTrialModal').classList.add('hidden')">Cancel</button>
+      <button class="btn btn-red" onclick="submitRejectTrial()">Reject &amp; Notify User</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8002/api'
+  : 'https://api.asktax.pk/api';
+
+let adminToken = '';
+let adminRole = '';
+let allUsers = [];
+let allTrialRequests = [];
+let confirmCallback = null;
+let isDark = localStorage.getItem('admin_theme') !== 'light';
+
+// ── THEME ─────────────────────────────────────────────────────────────────
+function applyTheme() {
+  document.getElementById('htmlRoot').setAttribute('data-theme', isDark ? 'dark' : 'light');
+  const btn = document.getElementById('themeBtn');
+  if (btn) btn.textContent = isDark ? '🌙' : '☀️';
+}
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('admin_theme', isDark ? 'dark' : 'light');
+  applyTheme();
+}
+applyTheme();
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const key = document.getElementById('adminKey').value.trim();
+  const errEl = document.getElementById('loginErr');
+  if (!key) return;
+  errEl.textContent = '';
+  try {
+    const res = await fetch(`${API}/admin/analytics`, { headers: { 'X-Admin-Token': key } });
+    if (!res.ok) { errEl.textContent = 'Invalid password.'; return; }
+    adminToken = key;
+
+    const actRes = await fetch(`${API}/admin/activity`, { headers: { 'X-Admin-Token': key } });
+    adminRole = actRes.ok ? 'owner' : 'assistant';
+
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    document.getElementById('roleLabel').textContent = adminRole === 'owner' ? 'admin' : adminRole;
+    document.getElementById('roleLabel').className = 'role-badge ' + (adminRole === 'owner' ? 'role-owner' : 'role-assistant');
+
+    if (adminRole === 'owner') {
+      document.querySelectorAll('.owner-only').forEach(el => el.classList.remove('hidden'));
+      fetch(`${API}/admin/init-db`, { method: 'POST', headers: { 'X-Admin-Token': key } });
+    }
+
+    initSectionNav();
+    initCollapsibleSections();
+    startSessionTracking();
+    loadAnalytics();
+    loadPipelineStats();
+    loadIpStats();
+    loadUsers();
+    loadPayments();
+    if (adminRole === 'owner') { loadActivity(); loadPasswords(); loadSessions(); loadBackupStatus(); }
+    loadRestoreRequests();
+    loadFeedback();
+    loadMessages();
+    loadTrialRequests();
+  } catch(e) {
+    errEl.textContent = 'Connection error.';
+  }
+}
+
+function doLogout() {
+  sendEvent('tab_hide', {});  // flush any open idle/hidden state
+  adminToken = ''; adminRole = '';
+  document.getElementById('loginOverlay').style.display = 'flex';
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('adminKey').value = '';
+}
+
+// ── ANALYTICS ─────────────────────────────────────────────────────────────
+async function loadAnalytics() {
+  const res = await fetch(`${API}/admin/analytics`, { headers: { 'X-Admin-Token': adminToken } });
+  const d = await res.json();
+  document.getElementById('s-total-queries').textContent = d.total_queries.toLocaleString();
+  document.getElementById('s-monthly-queries').textContent = d.monthly_queries.toLocaleString();
+  document.getElementById('s-total-users').textContent = d.total_users.toLocaleString();
+  document.getElementById('s-total-tokens').textContent = d.total_tokens.toLocaleString();
+  document.getElementById('s-monthly-tokens').textContent = d.monthly_tokens.toLocaleString();
+  document.getElementById('s-total-cost').textContent = '$' + d.api_billed_usd.toFixed(4);
+  document.getElementById('s-monthly-cost').textContent = '$' + d.api_billed_month_usd.toFixed(4);
+}
+
+// ── FBR DATA PIPELINE ────────────────────────────────────────────────────
+async function loadPipelineStats() {
+  const noticeEl = document.getElementById('pipelineNotice');
+  const setNotice = (msg, color) => {
+    if (!noticeEl) return;
+    if (msg) { noticeEl.style.display='block'; noticeEl.style.color=color||'var(--yellow)'; noticeEl.innerHTML=msg; }
+    else { noticeEl.style.display='none'; }
+  };
+  try {
+    const res = await fetch(`${API}/admin/pipeline-stats`, { headers: { 'X-Admin-Token': adminToken } });
+    if (!res.ok) {
+      setNotice(
+        res.status === 404
+          ? 'Pipeline stats endpoint not found — restart the Docker API container to load new routes.'
+          : `Failed to load pipeline stats (HTTP ${res.status}).`,
+        'var(--red)'
+      );
+      return;
+    }
+    const d = await res.json();
+    document.getElementById('ps-total').textContent = (d.total_documents || 0).toLocaleString();
+    document.getElementById('ps-completed').textContent = (d.completed || 0).toLocaleString();
+    // "pending" = docs downloaded to storage but not yet embedded (processing) + truly pending
+    document.getElementById('ps-pending').textContent = ((d.processing || 0) + (d.pending || 0)).toLocaleString();
+    document.getElementById('ps-failed').textContent = (d.failed || 0).toLocaleString();
+
+    const vEl = document.getElementById('ps-vectors');
+    if (d.qdrant_error) {
+      vEl.textContent = '!'; vEl.title = d.qdrant_error; vEl.style.color = 'var(--red)';
+      setNotice('Qdrant error: ' + d.qdrant_error, 'var(--red)');
+    } else {
+      vEl.textContent = d.qdrant_vectors != null ? d.qdrant_vectors.toLocaleString() : '—';
+      vEl.style.color = '';
+      if ((d.total_documents || 0) === 0) {
+        setNotice('No FBR documents imported yet. Click <strong>Check for New Data</strong> to see what\'s available, then <strong>Get It Now</strong> to run the pipeline.');
+      } else {
+        setNotice(null);
+      }
+    }
+  } catch(e) {
+    setNotice('Could not load pipeline stats: ' + e.message, 'var(--red)');
+  }
+}
+
+async function checkNewData() {
+  const btn = document.getElementById('checkNewBtn');
+  const bar = document.getElementById('checkResultBar');
+  btn.disabled = true;
+  btn.textContent = 'Checking FBR…';
+  bar.style.display = 'none';
+
+  try {
+    const res = await fetch(`${API}/admin/check-new-data`, { headers: { 'X-Admin-Token': adminToken } });
+    const d = await res.json();
+
+    if (!res.ok) {
+      const msg = res.status === 404
+        ? 'Endpoint not found — restart the Docker API container to load new routes'
+        : (d.detail || `Server error ${res.status}`);
+      showCheckResult('error', 'Check failed', msg, {}, false);
+      return;
+    }
+
+    const total = d.total_new || 0;
+    const cats = d.by_category || {};
+    const checked = d.total_checked || 0;
+
+    if (total === 0) {
+      showCheckResult('none', 'FBR data is up to date', `Checked ${checked.toLocaleString()} documents — no new ones found`, [], false);
+    } else {
+      showCheckResult(
+        'found',
+        `${total.toLocaleString()} new document${total !== 1 ? 's' : ''} found on FBR`,
+        `Checked ${checked.toLocaleString()} total · ready to download and index`,
+        cats,
+        true,
+      );
+    }
+  } catch(e) {
+    showCheckResult('error', 'Connection error', e.message, [], false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Check for New Data';
+  }
+}
+
+function showCheckResult(type, title, sub, cats, showGetBtn) {
+  const bar = document.getElementById('checkResultBar');
+  const titleEl = document.getElementById('checkResultTitle');
+  const subEl = document.getElementById('checkResultSub');
+  const actionsEl = document.getElementById('checkResultActions');
+  const catsEl = document.getElementById('checkResultCategories');
+
+  const colors = { found: 'var(--green)', none: 'var(--text-muted)', error: 'var(--red)' };
+  titleEl.style.color = colors[type] || 'var(--text)';
+  titleEl.textContent = title;
+  subEl.textContent = sub;
+
+  // Category chips
+  catsEl.innerHTML = Object.entries(cats).map(([cat, count]) =>
+    `<span style="background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:4px 12px;font-size:11px;font-family:'IBM Plex Mono',monospace;">
+      ${esc(cat.replace(/_/g,' '))} <strong style="color:var(--green);">+${count}</strong>
+    </span>`
+  ).join('');
+
+  // Action buttons
+  actionsEl.innerHTML = '';
+  if (showGetBtn) {
+    const getBtn = document.createElement('button');
+    getBtn.className = 'btn btn-sm';
+    getBtn.textContent = 'Get It Now';
+    getBtn.setAttribute('data-track', 'Get New FBR Data');
+    getBtn.onclick = () => runPipeline(getBtn);
+    actionsEl.appendChild(getBtn);
+  }
+  const dismissBtn = document.createElement('button');
+  dismissBtn.className = 'btn btn-sm btn-ghost';
+  dismissBtn.textContent = 'Dismiss';
+  dismissBtn.onclick = () => { bar.style.display = 'none'; };
+  actionsEl.appendChild(dismissBtn);
+
+  bar.style.display = 'block';
+}
+
+async function runPipeline(btn) {
+  if (btn) { btn.disabled = true; btn.textContent = 'Starting…'; }
+  try {
+    const res = await fetch(`${API}/admin/run-pipeline`, { method: 'POST', headers: { 'X-Admin-Token': adminToken } });
+    const d = await res.json();
+    if (res.ok) {
+      document.getElementById('checkResultTitle').textContent = 'Pipeline started in background';
+      document.getElementById('checkResultSub').textContent = d.message || 'Check server logs for progress. Stats will update when done.';
+      document.getElementById('checkResultCategories').innerHTML = '';
+      document.getElementById('checkResultActions').innerHTML =
+        '<button class="btn btn-sm btn-ghost" onclick="document.getElementById(\'checkResultBar\').style.display=\'none\'">Dismiss</button>';
+    } else {
+      alert(d.detail || 'Failed to start pipeline');
+    }
+  } catch(e) {
+    alert('Connection error: ' + e.message);
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Get It Now'; }
+  }
+}
+
+// ── BACKUP ────────────────────────────────────────────────────────────────
+async function loadBackupStatus() {
+  const box = document.getElementById('backupSummary');
+  const diffBox = document.getElementById('backupDiff');
+  try {
+    const res = await fetch(`${API}/admin/backup-status`, { headers: { 'X-Admin-Token': adminToken } });
+    const d = await res.json();
+
+    if (d.status === 'never_run') {
+      box.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">No backup has been run yet. Click <strong>Backup Now</strong> to create the first backup.</div>';
+      diffBox.style.display = 'none';
+      return;
+    }
+    if (d.status === 'unavailable') {
+      box.innerHTML = `<div style="color:var(--red);font-size:13px;">Backup service offline — start it with: <code>docker compose -f docker-compose.backup.yml up -d</code></div>`;
+      diffBox.style.display = 'none';
+      return;
+    }
+
+    const ts = d.timestamp ? new Date(d.timestamp).toLocaleString('en-PK') : '—';
+    const steps = d.steps || {};
+    const pgOk    = steps.postgres?.status === 'ok';
+    const qdOk    = steps.qdrant?.status   === 'ok';
+    const minioOk = steps.minio?.status    === 'ok';
+    const pgSize  = steps.postgres?.size_bytes ? (steps.postgres.size_bytes/1024/1024).toFixed(2) + ' MB' : '—';
+    const overallColor = d.status === 'ok' ? 'var(--green)' : 'var(--yellow)';
+
+    box.innerHTML = `
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <span style="font-size:15px;font-weight:600;color:${overallColor};">${d.status === 'ok' ? '✓ Backup complete' : '⚠ Partial backup'}</span>
+        <span style="font-size:12px;color:var(--text-muted);">${ts}</span>
+      </div>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;">
+        <div><div style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:4px;">PostgreSQL</div>
+          <span style="color:${pgOk?'var(--green)':'var(--red)'};">${pgOk?'✓':'✗'}</span>
+          <span style="font-size:12px;color:var(--text-dim);margin-left:6px;">${pgSize}</span></div>
+        <div><div style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:4px;">Qdrant</div>
+          <span style="color:${qdOk?'var(--green)':'var(--red)'};">${qdOk?'✓':'✗'}</span>
+          <span style="font-size:12px;color:var(--text-dim);margin-left:6px;">${steps.qdrant?.snapshot||'—'}</span></div>
+        <div><div style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:4px;">MinIO</div>
+          <span style="color:${minioOk?'var(--green)':'var(--red)'};">${minioOk?'✓':'✗'}</span>
+          <span style="font-size:12px;color:var(--text-dim);margin-left:6px;">${steps.minio?.files??'—'} files</span></div>
+      </div>`;
+
+    // Diff section
+    const diff = d.new_since_backup || {};
+    const live = d.current_stats || {};
+    const hasDiff = Object.keys(diff).length > 0;
+    if (hasDiff) {
+      diffBox.style.display = 'block';
+      const labels = { fbr_documents: 'FBR Docs', users: 'Users', queries: 'Queries', qdrant_vectors: 'Vectors' };
+      document.getElementById('backupDiffContent').innerHTML = Object.entries(diff).map(([k, v]) => `
+        <div>
+          <div style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:4px;">${labels[k]||k}</div>
+          <span style="font-size:22px;font-weight:700;color:${v>0?'var(--yellow)':'var(--green)'};">+${v}</span>
+          <div style="font-size:11px;color:var(--text-muted);">now: ${(live[k]||0).toLocaleString()}</div>
+        </div>`).join('');
+    } else {
+      diffBox.style.display = 'none';
+    }
+  } catch(e) {
+    box.innerHTML = `<div style="color:var(--red);font-size:13px;">Error: ${e.message}</div>`;
+  }
+}
+
+async function runBackup() {
+  const btn = document.getElementById('backupBtn');
+  const box = document.getElementById('backupSummary');
+  btn.disabled = true;
+  btn.textContent = 'Backing up…';
+  box.innerHTML = '<div style="color:var(--text-dim);font-size:13px;">Running backup — this takes 10–30 seconds…</div>';
+  try {
+    const res = await fetch(`${API}/admin/backup`, { method: 'POST', headers: { 'X-Admin-Token': adminToken } });
+    const d = await res.json();
+    if (!res.ok) { alert(d.detail || 'Backup failed'); return; }
+    await loadBackupStatus();
+  } catch(e) {
+    box.innerHTML = `<div style="color:var(--red);font-size:13px;">Connection error: ${e.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Backup Now';
+  }
+}
+
+
+// ── UPLOAD DOCUMENT ───────────────────────────────────────────────────────
+async function handleDocUpload(input) {
+  const statusEl = document.getElementById('uploadDocStatus');
+  const file = input.files[0];
+  if (!file) return;
+  const title = document.getElementById('uploadDocTitle').value.trim();
+  const category = document.getElementById('uploadDocCategory').value;
+  if (!title) { statusEl.textContent = 'Title is required.'; statusEl.style.color = 'var(--red)'; input.value = ''; return; }
+  if (!category) { statusEl.textContent = 'Category is required.'; statusEl.style.color = 'var(--red)'; input.value = ''; return; }
+  statusEl.textContent = `Uploading ${file.name}…`;
+  statusEl.style.color = 'var(--text-muted)';
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('title', title);
+  formData.append('category', category);
+  const docDate = document.getElementById('uploadDocDate').value;
+  const circular = document.getElementById('uploadDocCircular').value.trim();
+  const fy = document.getElementById('uploadDocFY').value.trim();
+  if (docDate) formData.append('doc_date', docDate);
+  if (circular) formData.append('circular_number', circular);
+  if (fy) formData.append('fiscal_year', fy);
+  try {
+    const res = await fetch(`${API}/admin/upload-document`, { method: 'POST', headers: { 'X-Admin-Token': adminToken }, body: formData });
+    const d = await res.json();
+    if (!res.ok) { statusEl.textContent = `Error: ${d.detail || 'Upload failed'}`; statusEl.style.color = 'var(--red)'; }
+    else {
+      statusEl.textContent = d.message || `Uploaded. Doc ID: ${d.doc_id}`;
+      statusEl.style.color = 'var(--green)';
+      document.getElementById('uploadDocTitle').value = '';
+      document.getElementById('uploadDocCategory').value = '';
+      document.getElementById('uploadDocDate').value = '';
+      document.getElementById('uploadDocCircular').value = '';
+      document.getElementById('uploadDocFY').value = '';
+      loadPipelineStats();
+    }
+  } catch (e) { statusEl.textContent = `Error: ${e.message}`; statusEl.style.color = 'var(--red)'; }
+  input.value = '';
+}
+
+// ── ANONYMOUS IPs ─────────────────────────────────────────────────────────
+async function loadIpStats() {
+  const tbody = document.getElementById('ipTable');
+  tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text-muted);text-align:center;padding:20px;">Loading…</td></tr>';
+  try {
+    const res = await fetch(`${API}/admin/ip-stats`, { headers: { 'X-Admin-Token': adminToken } });
+    const ips = await res.json();
+    if (!ips.length) {
+      tbody.innerHTML = '<tr><td colspan="8" style="color:var(--text-muted);text-align:center;padding:20px;">No anonymous queries yet.</td></tr>';
+      return;
+    }
+    const fmtDate = iso => {
+      if (!iso) return '—';
+      const d = new Date(iso);
+      const date = d.toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'2-digit'});
+      const time = d.toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit',hour12:true});
+      return `<span>${date}</span><br><span style="font-size:10px;color:var(--text-muted);">${time}</span>`;
+    };
+    tbody.innerHTML = ips.map(ip => {
+      const pct = Math.min(100, Math.round((ip.queries / 20) * 100));
+      const fillColor = ip.blocked ? 'var(--red)' : pct >= 100 ? 'var(--red)' : pct >= 75 ? 'var(--yellow)' : 'var(--green)';
+      const statusBadge = ip.blocked
+        ? '<span class="badge badge-blocked">Blocked</span>'
+        : ip.queries >= 20
+          ? '<span class="badge badge-temp">Limit Hit</span>'
+          : '<span class="badge badge-active">Active</span>';
+      const actionBtn = ip.blocked
+        ? `<button class="btn btn-sm btn-outline" onclick="toggleIpBlock('${ip.ip}',false)">Unblock</button>`
+        : `<button class="btn btn-sm btn-red" onclick="toggleIpBlock('${ip.ip}',true)">Block</button>`;
+      const cost = ip.api_cost_usd != null ? '$' + Number(ip.api_cost_usd).toFixed(4) : '—';
+      return `<tr>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;">${esc(ip.ip)}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--green);">${ip.queries}<span style="color:var(--text-muted);font-size:11px;"> / 20</span></td>
+        <td><div style="display:flex;align-items:center;gap:8px;"><div class="ip-bar"><div class="ip-bar-fill" style="width:${pct}%;background:${fillColor};"></div></div><span style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;">${pct}%</span></div></td>
+        <td style="font-size:12px;color:var(--text-muted);">${fmtDate(ip.first_seen)}</td>
+        <td style="font-size:12px;color:var(--text-muted);">${fmtDate(ip.last_seen)}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);">${cost}</td>
+        <td>${statusBadge}</td>
+        <td>${actionBtn}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="8" style="color:var(--red);text-align:center;padding:20px;">Failed to load.</td></tr>';
+  }
+}
+
+async function toggleIpBlock(ip, block) {
+  const method = block ? 'POST' : 'DELETE';
+  await fetch(`${API}/admin/ip-block/${encodeURIComponent(ip)}`, { method, headers: { 'X-Admin-Token': adminToken } });
+  loadIpStats();
+}
+
+// ── REGISTERED USERS ──────────────────────────────────────────────────────
+async function loadUsers() {
+  const res = await fetch(`${API}/admin/users`, { headers: { 'X-Admin-Token': adminToken } });
+  allUsers = await res.json();
+  renderUsers(allUsers);
+}
+
+function renderUsers(users) {
+  const tbody = document.getElementById('userTable');
+  tbody.innerHTML = '';
+  users.forEach(u => {
+    const tr = document.createElement('tr');
+    tr.id = `user-row-${u.id}`;
+    const joinedDate = u.created_at ? new Date(u.created_at).toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'2-digit'}) : '-';
+    const joinedTime = u.created_at ? new Date(u.created_at).toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit',hour12:true}) : '';
+    const joined = u.created_at ? `${joinedDate}<br><span style="font-size:10px;color:var(--text-muted);">${joinedTime}</span>` : '-';
+    const firmBadge = u.firm_name
+      ? `<div style="margin-top:3px;display:flex;align-items:center;gap:5px;">
+           <span style="font-size:9px;font-weight:700;background:rgba(245,197,24,0.15);color:var(--yellow);border-radius:4px;padding:1px 6px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;">FIRM</span>
+           <span style="font-size:11px;color:var(--text-muted);">${esc(u.firm_name)}</span>
+           <span style="font-size:9px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;">(${esc(u.firm_plan||'')})</span>
+         </div>`
+      : '';
+    const roleBadge = u.role && u.role !== 'individual'
+      ? `<span style="font-size:9px;font-weight:700;background:rgba(0,232,122,0.1);color:var(--green);border-radius:4px;padding:1px 6px;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-left:4px;">${esc(u.role.replace('firm_',''))}</span>`
+      : '';
+    const tr_req = allTrialRequests.find(r => r.user_id === u.id);
+    const now = new Date();
+    const trialExpiry = u.trial_expires_at ? new Date(u.trial_expires_at) : null;
+    const hasActiveTrial = trialExpiry && trialExpiry > now;
+    let trialCell;
+
+    if (hasActiveTrial) {
+      // Individual user with active trial — show expiry date
+      const expiryStr = trialExpiry.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+      trialCell = `<span style="font-size:11px;color:var(--green);font-weight:500;">Until ${expiryStr}</span>`;
+    } else {
+      // Individual user, no active trial — show quick-give buttons
+      trialCell = `<div style="display:flex;gap:4px;flex-wrap:wrap;">
+        <button class="btn btn-sm" style="background:var(--green);color:#000;padding:3px 9px;font-size:11px;" onclick="giveAdminTrial(${u.id},'basic')">+Basic</button>
+        <button class="btn btn-sm" style="background:#7c3aed;color:#fff;padding:3px 9px;font-size:11px;" onclick="giveAdminTrial(${u.id},'professional')">+Pro</button>
+      </div>`;
+    }
+    tr.innerHTML = `
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-muted);">#${u.id}</td>
+      <td style="font-weight:500;">${esc(u.full_name)}${roleBadge}</td>
+      <td style="color:var(--text-dim);font-size:12px;">${esc(u.email)}${firmBadge}</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-muted);">${esc(u.last_ip)}</td>
+      <td style="font-size:12px;color:var(--text-muted);">${joined}</td>
+      <td>
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;line-height:1.7;">
+          <div><span style="color:var(--text-muted);font-size:10px;">THIS MONTH</span> <strong style="color:var(--green);">${u.monthly_queries}</strong></div>
+          <div><span style="color:var(--text-muted);font-size:10px;">LIFETIME&nbsp;&nbsp;&nbsp;</span> <strong style="color:var(--text);">${u.lifetime_queries}</strong></div>
+        </div>
+      </td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);">$${u.api_cost_usd.toFixed(4)}</td>
+      <td><select class="inline-select" id="tier-${u.id}" onchange="markDirty(${u.id})">
+        ${u.firm_id ? `
+          <option value="trial"       ${u.firm_plan==='trial' ?'selected':''}>Trial</option>
+          <option value="basic"       ${u.firm_plan==='basic' ?'selected':''}>Basic</option>
+          <option value="pro"         ${u.firm_plan==='pro'   ?'selected':''}>Pro</option>
+        ` : `
+          <option value="free"             ${!hasActiveTrial && u.subscription_tier==='free'         ?'selected':''}>Free</option>
+          <option value="basic"            ${!hasActiveTrial && u.subscription_tier==='basic'        ?'selected':''}>Basic</option>
+          <option value="trial_basic"      ${hasActiveTrial  && u.subscription_tier==='basic'        ?'selected':''}>Trial Basic</option>
+          <option value="professional"     ${!hasActiveTrial && u.subscription_tier==='professional' ?'selected':''}>Pro</option>
+          <option value="trial_professional" ${hasActiveTrial && u.subscription_tier==='professional'?'selected':''}>Trial Pro</option>
+        `}
+      </select></td>
+      <td>${trialCell}</td>
+      <td><select class="inline-select" id="status-${u.id}" onchange="markDirty(${u.id})">
+        <option value="active" ${u.status==='active'?'selected':''}>Active</option>
+        <option value="temporarily_blocked" ${u.status==='temporarily_blocked'?'selected':''}>Temp Block</option>
+        <option value="blocked" ${u.status==='blocked'?'selected':''}>Blocked</option>
+      </select></td>
+      <td style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+        <button class="btn btn-sm" id="update-btn-${u.id}" style="display:none;" onclick="confirmUpdateUser(${u.id},'${esc(u.email)}')">Update</button>
+        <button class="btn btn-sm btn-outline" onclick="openMsgBubble(${u.id},'${esc(u.full_name||u.email.split('@')[0])}','${esc(u.email)}')">Msg</button>
+        <button class="btn btn-sm btn-ghost" onclick="showUserPayments(${u.id},'${esc(u.full_name||u.email.split('@')[0])}')">Pay</button>
+        ${adminRole==='owner'?`<button class="btn btn-sm btn-red" onclick="confirmDeleteUser(${u.id},'${esc(u.email)}')">Del</button>`:''}
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterUsers(q) {
+  renderUsers(allUsers.filter(u =>
+    u.email.toLowerCase().includes(q.toLowerCase()) ||
+    (u.full_name||'').toLowerCase().includes(q.toLowerCase())
+  ));
+}
+
+function confirmUpdateUser(userId, email) {
+  showConfirm('Update User', `Update plan and status for ${email}?`, async () => {
+    const tier = document.getElementById(`tier-${userId}`).value;
+    const status = document.getElementById(`status-${userId}`).value;
+    await fetch(`${API}/admin/users/${userId}/upgrade?tier=${tier}`, {method:'PUT',headers:{'X-Admin-Token':adminToken}});
+    await fetch(`${API}/admin/users/${userId}/status?status=${status}`, {method:'PUT',headers:{'X-Admin-Token':adminToken}});
+    highlightRow(userId); loadUsers();
+  });
+}
+
+function confirmDeleteUser(userId, email) {
+  showConfirm('Delete User', `Permanently delete ${email} and all their data? This cannot be undone.`, async () => {
+    await fetch(`${API}/admin/users/${userId}`, {method:'DELETE',headers:{'X-Admin-Token':adminToken}});
+    loadUsers();
+  }, true);
+}
+
+function highlightRow(userId) {
+  const row = document.getElementById(`user-row-${userId}`);
+  if (!row) return;
+  row.classList.add('highlight-green');
+  setTimeout(() => row.classList.remove('highlight-green'), 2500);
+}
+
+function scrollToUser(userId) {
+  setTimeout(() => {
+    const row = document.getElementById(`user-row-${userId}`);
+    if (row) { row.scrollIntoView({behavior:'smooth',block:'center'}); highlightRow(userId); }
+  }, 100);
+}
+
+// ── PAYMENTS ──────────────────────────────────────────────────────────────
+async function loadPayments() {
+  const res = await fetch(`${API}/admin/payments`, {headers:{'X-Admin-Token':adminToken}});
+  const payments = await res.json();
+  const list = document.getElementById('paymentList');
+  if (!payments.length) { list.innerHTML='<div style="color:var(--text-muted);font-size:13px;">No payments recorded yet.</div>'; return; }
+  list.innerHTML = payments.map(p => `
+    <div class="payment-card">
+      ${p.receipt_url?`<img class="payment-receipt" src="${p.receipt_url}" onclick="window.open('${p.receipt_url}','_blank')" title="View receipt">`:`<div class="payment-receipt-placeholder">🧾</div>`}
+      <div class="payment-info">
+        <div class="payment-name" onclick="scrollToUser(${p.user_id})">${esc(p.user_name)} <span style="color:var(--text-muted);font-size:11px;">#${p.user_id}</span></div>
+        <div class="payment-meta">
+          <span class="badge badge-${p.plan==='basic'?'basic':'professional'}">${p.plan}</span>
+          &nbsp;<strong style="color:var(--green);">PKR ${p.amount_pkr?.toLocaleString()}</strong>
+          &nbsp;via ${esc(p.method)}&nbsp;· ${p.created_at?new Date(p.created_at).toLocaleDateString('en-PK'):''}
+          ${p.notes?`&nbsp;· <span style="color:var(--text-muted);">${esc(p.notes)}</span>`:''}
+        </div>
+      </div>
+      ${adminRole==='owner'?`<button class="btn btn-sm btn-red" onclick="confirmDeletePayment(${p.id})" style="margin-left:auto;flex-shrink:0;">Delete</button>`:''}
+    </div>`).join('');
+}
+
+function openPaymentModal() { document.getElementById('paymentModal').classList.remove('hidden'); }
+function closePaymentModal() { document.getElementById('paymentModal').classList.add('hidden'); }
+
+async function submitPayment() {
+  const userId=document.getElementById('p-userid').value, userName=document.getElementById('p-username').value, amount=document.getElementById('p-amount').value;
+  const method=document.getElementById('p-method').value, plan=document.getElementById('p-plan').value, notes=document.getElementById('p-notes').value;
+  const receiptFile=document.getElementById('p-receipt').files[0];
+  if (!userId||!userName||!amount) { alert('User ID, name and amount are required.'); return; }
+  const fd=new FormData();
+  fd.append('user_id',userId); fd.append('user_name',userName); fd.append('amount_pkr',amount);
+  fd.append('method',method); fd.append('plan',plan); fd.append('notes',notes);
+  if (receiptFile) fd.append('receipt',receiptFile);
+  const res=await fetch(`${API}/admin/payments`,{method:'POST',headers:{'X-Admin-Token':adminToken},body:fd});
+  if (res.ok){closePaymentModal();loadPayments();}else{alert('Failed to save payment.');}
+}
+
+function confirmDeletePayment(id) {
+  showConfirm('Delete Payment','Remove this payment record?',async()=>{
+    await fetch(`${API}/admin/payments/${id}`,{method:'DELETE',headers:{'X-Admin-Token':adminToken}});
+    loadPayments();
+  },true);
+}
+
+// ── UPDATE BUTTON DIRTY TRACKING ─────────────────────────────────────────
+function markDirty(userId) {
+  const btn = document.getElementById(`update-btn-${userId}`);
+  if (btn) btn.style.display = '';
+}
+
+// ── MSG BUBBLE ────────────────────────────────────────────────────────────
+const _BUBBLE_SUGGESTIONS = [
+  { label: 'Welcome', text: `Hi {name}!\n\nWelcome to AskTax.pk — Pakistan's AI-powered tax assistant. We're glad to have you. Feel free to ask any income tax, sales tax, or FBR-related question anytime. We're here to help!` },
+  { label: 'Features', text: `Hi {name}!\n\nHere's what AskTax.pk can do for you:\n• Instant answers on income tax, sales tax & FBR circulars\n• Supports both English and Urdu queries\n• References actual FBR circulars & SROs by number\n• Full chat history saved to your account\n\nGive it a try — ask your first question!` },
+  { label: 'AI Services', text: `Hi {name},\n\nI wanted to personally reach out. Alongside AskTax.pk, I offer custom AI integrations for businesses and firms — chatbots, document analyzers, and workflow automation tailored to your needs.\n\nIf your organization could benefit from a custom AI solution, I'd love to discuss it. Are you interested?` },
+  { label: 'Feedback', text: `Hi {name},\n\nWe'd love to hear your feedback on AskTax.pk! What features are most useful to you? What could we do better? Your thoughts help us improve the experience for everyone.` },
+  { label: 'Suggestions', text: `Hi {name},\n\nDo you have any suggestions for AskTax.pk? New features, better answers, UI improvements — anything at all. We're always listening and working to improve. Please share your thoughts!` },
+];
+let _bubbleUserId = null, _bubbleUserName = '';
+
+async function openMsgBubble(userId, name, email) {
+  _bubbleUserId = userId;
+  _bubbleUserName = name;
+  document.getElementById('bubbleUserName').textContent = name;
+  document.getElementById('bubbleUserEmail').textContent = email;
+  document.getElementById('bubbleReplyInput').value = '';
+  document.getElementById('adminMsgBubble').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  // Render suggestion chips
+  const sugg = document.getElementById('bubbleSuggestions');
+  sugg.innerHTML = _BUBBLE_SUGGESTIONS.map((s, i) =>
+    `<button class="msg-sugg-chip" onclick="_applySuggestion(${i})">${esc(s.label)}</button>`
+  ).join('');
+
+  await _loadBubbleMessages(userId);
+}
+
+function _applySuggestion(idx) {
+  const s = _BUBBLE_SUGGESTIONS[idx];
+  const text = s.text.replace(/{name}/g, _bubbleUserName);
+  const ta = document.getElementById('bubbleReplyInput');
+  ta.value = text;
+  ta.focus();
+  ta.selectionStart = ta.selectionEnd = ta.value.length;
+}
+
+async function _loadBubbleMessages(userId) {
+  const body = document.getElementById('bubbleMsgs');
+  body.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding:20px;">Loading…</div>';
+  try {
+    const res = await fetch(`${API}/admin/messages/${userId}?admin_token=${encodeURIComponent(adminToken)}`);
+    if (!res.ok) { body.innerHTML = '<div style="color:var(--text-muted);padding:20px;text-align:center;">No messages yet.</div>'; return; }
+    const data = await res.json();
+    const msgs = data.messages || [];
+    if (!msgs.length) {
+      body.innerHTML = '<div style="color:var(--text-muted);padding:20px;text-align:center;">No messages yet. Start the conversation!</div>';
+      return;
+    }
+    body.innerHTML = msgs.map(m => {
+      const cls = m.from_admin ? 'bubble-msg-out' : 'bubble-msg-in';
+      const time = m.created_at ? new Date(m.created_at).toLocaleString('en-PK',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}) : '';
+      return `<div><div class="${cls}">${esc(m.body)}</div><div class="bubble-msg-time" style="${m.from_admin?'text-align:right':''}">${time}</div></div>`;
+    }).join('');
+    body.scrollTop = body.scrollHeight;
+  } catch(e) {
+    body.innerHTML = '<div style="color:var(--red);padding:20px;text-align:center;">Failed to load messages.</div>';
+  }
+}
+
+function closeAdminMsgBubble() {
+  document.getElementById('adminMsgBubble').classList.remove('open');
+  document.body.style.overflow = '';
+  _bubbleUserId = null;
+}
+
+async function sendBubbleReply() {
+  if (!_bubbleUserId) return;
+  const ta = document.getElementById('bubbleReplyInput');
+  const text = ta.value.trim();
+  if (!text) return;
+  const btn = document.querySelector('#adminMsgBubble .bubble-compose-row .btn:last-child');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+  try {
+    const res = await fetch(`${API}/admin/messages/${_bubbleUserId}/reply?admin_token=${encodeURIComponent(adminToken)}`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({body: text}),
+    });
+    if (res.ok) {
+      ta.value = '';
+      await _loadBubbleMessages(_bubbleUserId);
+    } else {
+      const d = await res.json().catch(()=>({}));
+      alert(d.detail || 'Failed to send.');
+    }
+  } catch(e) { alert('Connection error.'); }
+  finally { if (btn) { btn.disabled = false; btn.textContent = 'Send'; } }
+}
+
+function applyBubblePaymentTemplate(plan) {
+  const ta = document.getElementById('bubbleReplyInput');
+  const name = _bubbleUserName || 'there';
+  ta.value = `Hi ${name},\n\nThank you for requesting access to AskTax.pk ${plan} Plan!\n\nPayment Details:\n📱 JazzCash / EasyPaisa: 03312228870\n\nAmount: ${plan === 'Basic' ? 'PKR 2,999/month or PKR 29,990/year' : 'PKR 5,999/month or PKR 59,990/year'}\n\nSteps:\n1. Send payment to 03312228870\n2. Reply with your payment screenshot\n3. Account upgraded within 1 hour (Mon–Sat, 10am–6pm)\n\n— AskTax.pk Support`;
+  ta.focus();
+}
+
+// Legacy (keep for sub-section openThread compatibility)
+function openUserMessage(userId, name, email) {
+  openMsgBubble(userId, name, email);
+}
+
+// ── PER-USER PAYMENTS ─────────────────────────────────────────────────────
+async function showUserPayments(userId, name) {
+  let overlay = document.getElementById('userPayModal');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'userPayModal';
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `<div class="modal" style="max-width:560px;max-height:80vh;overflow-y:auto;">
+      <button class="modal-close" onclick="document.getElementById('userPayModal').classList.add('hidden')">✕</button>
+      <h3 id="userPayTitle">Payments</h3>
+      <div id="userPayList" style="margin-top:16px;"></div>
+      <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+        <button class="btn btn-sm" onclick="openPaymentModal()">+ Add Payment</button>
+      </div>
+    </div>`;
+    document.body.appendChild(overlay);
+  }
+  overlay.classList.remove('hidden');
+  document.getElementById('userPayTitle').textContent = `Payments — ${name}`;
+  document.getElementById('userPayList').innerHTML = '<div style="color:var(--text-muted);font-size:13px;">Loading…</div>';
+  try {
+    const res = await fetch(`${API}/admin/payments?user_id=${userId}`, {headers:{'X-Admin-Token':adminToken}});
+    const payments = res.ok ? await res.json() : [];
+    const userPays = payments.filter ? payments.filter(p => p.user_id === userId) : [];
+    if (!userPays.length) {
+      document.getElementById('userPayList').innerHTML = '<div style="color:var(--text-muted);font-size:13px;">No payments recorded for this user.</div>';
+      return;
+    }
+    document.getElementById('userPayList').innerHTML = userPays.map(p => `
+      <div class="payment-card">
+        ${p.receipt_url?`<img class="payment-receipt" src="${p.receipt_url}" onclick="window.open('${p.receipt_url}','_blank')" title="View receipt">`:`<div class="payment-receipt-placeholder">🧾</div>`}
+        <div class="payment-info">
+          <div class="payment-meta">
+            <span class="badge badge-${p.plan==='basic'?'basic':'professional'}">${p.plan}</span>
+            &nbsp;<strong style="color:var(--green);">PKR ${p.amount_pkr?.toLocaleString()}</strong>
+            &nbsp;via ${esc(p.method)}&nbsp;· ${p.created_at?new Date(p.created_at).toLocaleDateString('en-PK'):''}
+            ${p.notes?`&nbsp;· <span style="color:var(--text-muted);">${esc(p.notes)}</span>`:''}
+          </div>
+        </div>
+        ${adminRole==='owner'?`<button class="btn btn-sm btn-red" onclick="confirmDeletePayment(${p.id})" style="margin-left:auto;flex-shrink:0;">Delete</button>`:''}
+      </div>`).join('');
+  } catch(e) {
+    document.getElementById('userPayList').innerHTML = '<div style="color:var(--red);font-size:13px;">Failed to load payments.</div>';
+  }
+}
+
+// ── PASSWORD MANAGER ──────────────────────────────────────────────────────
+function previewPwdRole(val) {
+  const el = document.getElementById('pwdRolePreview');
+  if (!val) { el.textContent = '—'; el.className = 'role-preview'; return; }
+  const isOwner = val.slice(0,3).toLowerCase() === 'own';
+  el.textContent = isOwner ? 'admin' : 'assistant';
+  el.className = 'role-preview ' + (isOwner ? 'owner' : 'assistant');
+}
+
+function generatePassword() {
+  const chars = 'abcdefghijkmnpqrstuvwxyz23456789';
+  let rand = '';
+  for (let i = 0; i < 10; i++) rand += chars[Math.floor(Math.random() * chars.length)];
+  const pwd = 'ast_' + rand;
+  const inp = document.getElementById('newPwdInput');
+  inp.value = pwd;
+  previewPwdRole(pwd);
+  inp.select();
+}
+
+async function loadPasswords() {
+  const res = await fetch(`${API}/admin/passwords`, {headers:{'X-Admin-Token':adminToken}});
+  const list = await res.json();
+  const el = document.getElementById('pwdList');
+  if (!list.length) { el.innerHTML='<div style="color:var(--text-muted);font-size:13px;">No passwords created yet. Use Generate to create one.</div>'; return; }
+  el.innerHTML = list.map(p => `
+    <div class="pwd-item">
+      <span class="pwd-item-key">${esc(p.password)}</span>
+      <span class="badge ${p.role==='owner'?'badge-owner':'badge-assistant'}">${p.role==='owner'?'admin':p.role}</span>
+      <button class="btn btn-sm btn-ghost" onclick="navigator.clipboard.writeText('${esc(p.password)}').then(()=>{this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)})">Copy</button>
+      <button class="btn btn-sm btn-red" onclick="deletePassword('${esc(p.password)}')">Remove</button>
+    </div>`).join('');
+}
+
+async function createPassword() {
+  const pwd = document.getElementById('newPwdInput').value.trim();
+  if (pwd.length < 6) { alert('Password must be at least 6 characters.'); return; }
+  const res = await fetch(`${API}/admin/passwords?password=${encodeURIComponent(pwd)}`, {method:'POST',headers:{'X-Admin-Token':adminToken}});
+  if (res.ok) {
+    document.getElementById('newPwdInput').value='';
+    previewPwdRole('');
+    loadPasswords();
+  } else {
+    const d = await res.json().catch(()=>({}));
+    alert('Failed to create password: ' + (d.detail || res.status));
+  }
+}
+
+async function deletePassword(pwd) {
+  if (!confirm(`Remove password "${pwd}"?`)) return;
+  await fetch(`${API}/admin/passwords/${encodeURIComponent(pwd)}`, {method:'DELETE',headers:{'X-Admin-Token':adminToken}});
+  loadPasswords();
+}
+
+// ── ASSISTANT SESSIONS ────────────────────────────────────────────────────
+async function loadSessions() {
+  const tbody = document.getElementById('sessionTable');
+  tbody.innerHTML = '<tr><td colspan="9" style="color:var(--text-muted);text-align:center;padding:20px;">Loading…</td></tr>';
+  try {
+    const res = await fetch(`${API}/admin/session-stats`, {headers:{'X-Admin-Token':adminToken}});
+    const sessions = await res.json();
+    if (!sessions.length) {
+      tbody.innerHTML = '<tr><td colspan="9" style="color:var(--text-muted);text-align:center;padding:20px;">No sessions recorded yet.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = sessions.map(s => {
+      const loginTime = new Date(s.login_at * 1000).toLocaleString('en-PK');
+      const clicksHtml = s.clicks.length
+        ? s.clicks.map(c => `<div>· ${esc(c)}</div>`).join('')
+        : '<div style="color:var(--text-muted)">none</div>';
+      return `<tr>
+        <td><span class="badge ${s.role==='owner'?'badge-owner':'badge-assistant'}">${s.role==='owner'?'admin':s.role}</span></td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-muted);">…${esc(s.token_hint)}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;">${esc(s.ip)}</td>
+        <td style="font-size:12px;color:var(--text-dim);">${loginTime}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;">${fmtDur(s.duration_secs)}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);">${fmtDur(s.active_secs)}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--yellow);">${fmtDur(s.idle_secs)}</td>
+        <td style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text-muted);">${fmtDur(s.hidden_secs)}</td>
+        <td>
+          <div class="tooltip-wrap">
+            <span class="query-tag">🖱 ${s.click_count}</span>
+            <div class="tooltip-box"><div class="clicks-list">${clicksHtml}</div></div>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="9" style="color:var(--red);text-align:center;padding:20px;">Failed to load.</td></tr>';
+  }
+}
+
+function fmtDur(secs) {
+  if (!secs || secs < 1) return '—';
+  if (secs < 60) return secs + 's';
+  if (secs < 3600) return Math.floor(secs/60) + 'm ' + (secs%60) + 's';
+  return Math.floor(secs/3600) + 'h ' + Math.floor((secs%3600)/60) + 'm';
+}
+
+// ── ACTIVITY LOG ──────────────────────────────────────────────────────────
+async function loadActivity() {
+  const res = await fetch(`${API}/admin/activity`, {headers:{'X-Admin-Token':adminToken}});
+  const logs = await res.json();
+  const el = document.getElementById('activityList');
+  if (!logs.length) { el.innerHTML='<div style="color:var(--text-muted);font-size:13px;">No activity recorded yet.</div>'; return; }
+  el.innerHTML = logs.map(l => `
+    <div class="activity-row">
+      <div class="activity-time">${l.created_at?new Date(l.created_at).toLocaleString('en-PK'):''}</div>
+      <div><span class="badge ${l.role==='owner'?'badge-active':'badge-temp'}">${l.role==='owner'?'admin':l.role}</span></div>
+      <div class="activity-action">${esc(l.action)}</div>
+      <div class="activity-detail">${esc(l.detail||'')}</div>
+    </div>`).join('');
+}
+
+// ── RESTORE REQUESTS ──────────────────────────────────────────────────────
+async function loadRestoreRequests() {
+  try {
+    const res = await fetch(`${API}/admin/restore-requests?admin_token=${encodeURIComponent(adminToken)}`);
+    if (!res.ok) return;
+    const items = await res.json();
+    const el = document.getElementById('restoreRequestList');
+    const count = document.getElementById('restoreRequestCount');
+    if (count) count.textContent = `${items.filter(i=>i.status==='pending').length} pending`;
+    if (!items.length) { el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">No restore requests yet.</div>'; return; }
+    const statusColor = {pending:'var(--yellow)', approved:'var(--green)', rejected:'var(--text-muted)'};
+    el.innerHTML = items.map(r => `
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;">
+          <span style="font-size:13px;font-weight:600;color:var(--text);">${esc(r.user_name||'Unknown')}</span>
+          <span style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;">${esc(r.user_email||'')}</span>
+          <span style="font-size:10px;font-family:'IBM Plex Mono',monospace;color:${statusColor[r.status]||'var(--text-muted)'};text-transform:uppercase;">${r.status}</span>
+          <span style="font-size:10px;color:var(--text-muted);margin-left:auto;">${r.created_at?new Date(r.created_at).toLocaleString('en-PK'):''}</span>
+        </div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">Chat: <strong style="color:var(--text);">${esc(r.chat_title||'#'+r.chat_id)}</strong> &nbsp;(ID ${r.chat_id})</div>
+        ${r.context?`<div style="font-size:13px;color:var(--text-dim);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-top:6px;line-height:1.5;">${esc(r.context)}</div>`:'<div style="font-size:11px;color:var(--text-muted);margin-top:4px;font-style:italic;">No context provided.</div>'}
+        ${r.status==='pending'?`
+          <div style="display:flex;gap:8px;margin-top:10px;">
+            <button class="btn btn-sm" style="background:var(--green);color:#000;" onclick="approveRestoreRequest(${r.id})">✓ Approve & Restore</button>
+            <button class="btn btn-sm btn-outline" onclick="rejectRestoreRequest(${r.id})">✗ Reject</button>
+          </div>`:''}
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+
+async function approveRestoreRequest(id) {
+  if (!confirm('Restore this chat for the user?')) return;
+  const res = await fetch(`${API}/admin/restore-requests/${id}/approve?admin_token=${encodeURIComponent(adminToken)}`, { method: 'POST' });
+  if (res.ok) loadRestoreRequests();
+  else { const d = await res.json(); alert(d.detail || 'Failed'); }
+}
+
+async function rejectRestoreRequest(id) {
+  if (!confirm('Reject this restore request?')) return;
+  const res = await fetch(`${API}/admin/restore-requests/${id}/reject?admin_token=${encodeURIComponent(adminToken)}`, { method: 'POST' });
+  if (res.ok) loadRestoreRequests();
+}
+
+// ── FEEDBACK ──────────────────────────────────────────────────────────────
+async function loadFeedback() {
+  try {
+    const res = await fetch(`${API}/admin/feedback?admin_token=${encodeURIComponent(adminToken)}`);
+    if (!res.ok) return;
+    const items = await res.json();
+    const el = document.getElementById('feedbackList');
+    const count = document.getElementById('feedbackCount');
+    if (count) count.textContent = `${items.length} total`;
+    if (!items.length) { el.innerHTML = '<div style="color:var(--text-muted);font-size:13px;">No feedback yet.</div>'; return; }
+    el.innerHTML = items.map(f => `
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start;">
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+            <span style="font-size:13px;font-weight:600;color:var(--text);">${esc(f.user_name||'Anonymous')}</span>
+            ${f.user_email?`<span style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;">${esc(f.user_email)}</span>`:''}
+            ${f.rating?`<span style="font-size:11px;color:var(--yellow);">${'★'.repeat(f.rating)}</span>`:''}
+          </div>
+          <div style="font-size:13px;color:var(--text-dim);line-height:1.6;margin-bottom:6px;">${esc(f.message)}</div>
+          <div style="font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;">${f.created_at?new Date(f.created_at).toLocaleString('en-PK'):''}</div>
+        </div>
+        ${adminRole==='owner'?`<button class="btn btn-sm btn-red" onclick="deleteFeedback(${f.id})">Delete</button>`:''}
+      </div>
+    `).join('');
+  } catch(e) {}
+}
+
+async function deleteFeedback(id) {
+  if (!confirm('Delete this feedback?')) return;
+  await fetch(`${API}/admin/feedback/${id}?admin_token=${encodeURIComponent(adminToken)}`, { method: 'DELETE' });
+  loadFeedback();
+}
+
+// ── SESSION TRACKING ──────────────────────────────────────────────────────
+let sessionId = null;
+let idleTimer = null;
+let isIdle = false;
+const IDLE_TIMEOUT_MS = 90_000; // 90 seconds idle
+
+function startSessionTracking() {
+  sessionId = Date.now().toString(36) + Math.random().toString(36).slice(2);
+  sendEvent('session_login', {});
+  setInterval(() => sendEvent('heartbeat', {}), 30_000);
+  document.addEventListener('click', onAdminClick, true);
+  document.addEventListener('visibilitychange', onVisibilityChange);
+  document.addEventListener('mousemove', resetIdle, {passive: true});
+  document.addEventListener('keydown', resetIdle, {passive: true});
+  resetIdle();
+}
+
+function sendEvent(type, detail) {
+  if (!adminToken || !sessionId) return;
+  fetch(`${API}/admin/session-event`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-Admin-Token':adminToken},
+    body: JSON.stringify({session_id: sessionId, event_type: type, detail}),
+  }).catch(() => {});
+}
+
+function onAdminClick(e) {
+  const label =
+    e.target.closest('[data-track]')?.dataset.track ||
+    e.target.closest('.section-label')?.textContent?.trim() ||
+    e.target.closest('.btn')?.textContent?.trim() ||
+    null;
+  if (label) sendEvent('click', {element: label});
+}
+
+function onVisibilityChange() {
+  sendEvent(document.hidden ? 'tab_hide' : 'tab_show', {});
+}
+
+function resetIdle() {
+  if (isIdle) { isIdle = false; sendEvent('idle_end', {}); }
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(() => { isIdle = true; sendEvent('idle_start', {}); }, IDLE_TIMEOUT_MS);
+}
+
+// ── CONFIRM ───────────────────────────────────────────────────────────────
+function showConfirm(title, msg, onOk, danger = false) {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent = msg;
+  const btn = document.getElementById('confirmOkBtn');
+  btn.textContent = danger ? 'Yes, Delete' : 'Confirm';
+  btn.className = danger ? 'btn btn-red' : 'btn';
+  confirmCallback = onOk;
+  document.getElementById('confirmOverlay').classList.remove('hidden');
+}
+function cancelConfirm() {
+  document.getElementById('confirmOverlay').classList.add('hidden');
+  confirmCallback = null;
+}
+document.getElementById('confirmOkBtn').addEventListener('click', async () => {
+  if (confirmCallback) { await confirmCallback(); }
+  cancelConfirm();
+});
+
+// ── MESSAGES ──────────────────────────────────────────────────────────────
+let activeThreadUserId = null;
+let activeThreadMeta = { name: '', email: '' };
+
+async function loadMessages() {
+  const sidebar = document.getElementById('msgSidebar');
+  sidebar.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:20px;">Loading…</div>';
+  try {
+    const res = await fetch(`${API}/admin/messages?admin_token=${encodeURIComponent(adminToken)}`);
+    if (!res.ok) {
+      sidebar.innerHTML = `<div style="color:var(--red);font-size:13px;padding:20px;">Failed to load (${res.status}).</div>`;
+      return;
+    }
+    const convs = await res.json();
+
+    const totalUnread = convs.reduce((s, c) => s + (c.unread || 0), 0);
+    const badge = document.getElementById('msgUnreadBadge');
+    if (badge) { badge.textContent = totalUnread || ''; badge.style.display = totalUnread > 0 ? 'inline-flex' : 'none'; }
+    updateNavBadge('snavMsgCount', totalUnread);
+
+    if (!convs.length) {
+      sidebar.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:20px;">No messages yet.</div>';
+      return;
+    }
+
+    sidebar.innerHTML = convs.map(c => `
+      <div class="msg-user-item ${activeThreadUserId === c.user_id ? 'active' : ''}" data-uid="${c.user_id}"
+        onclick="openThread(${c.user_id}, '${esc(c.name || c.email.split('@')[0])}', '${esc(c.email)}')">
+        <div class="msg-user-name">
+          ${esc(c.name || c.email.split('@')[0])}
+          ${c.unread > 0 ? `<span class="msg-unread-dot" title="${c.unread} unread"></span>` : ''}
+        </div>
+        <div class="msg-user-email">${esc(c.email)}</div>
+        <div class="msg-user-preview">${esc((c.last_msg || '').slice(0, 80))}</div>
+      </div>`).join('');
+
+    if (activeThreadUserId) openThread(activeThreadUserId, activeThreadMeta.name, activeThreadMeta.email);
+  } catch(e) {
+    sidebar.innerHTML = `<div style="color:var(--red);font-size:13px;padding:20px;">Error: ${e.message}</div>`;
+  }
+}
+
+async function openThread(userId, name, email) {
+  activeThreadUserId = userId;
+  if (name || email) activeThreadMeta = { name, email };
+
+  const displayName = activeThreadMeta.name || activeThreadMeta.email || `User #${userId}`;
+  document.getElementById('msgThreadHeader').textContent = displayName;
+  document.getElementById('msgThreadHeader').style.color = '';
+  document.getElementById('msgReplyArea').style.display = 'block';
+
+  document.querySelectorAll('.msg-user-item').forEach(el =>
+    el.classList.toggle('active', parseInt(el.dataset.uid) === userId)
+  );
+
+  const bubblesEl = document.getElementById('msgBubbles');
+  bubblesEl.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding-top:20px;">Loading…</div>';
+
+  try {
+    const res = await fetch(`${API}/admin/messages/${userId}?admin_token=${encodeURIComponent(adminToken)}`);
+    const d = await res.json();
+
+    if (d.user) {
+      const uName = d.user.name || (d.user.email || '').split('@')[0];
+      const header = uName + (d.user.email ? ` · ${d.user.email}` : '');
+      document.getElementById('msgThreadHeader').textContent = header;
+      activeThreadMeta = { name: uName, email: d.user.email };
+    }
+
+    const msgs = d.messages || [];
+    if (!msgs.length) {
+      bubblesEl.innerHTML = '<div style="color:var(--text-muted);font-size:13px;text-align:center;padding-top:20px;">No messages yet in this thread.</div>';
+      return;
+    }
+
+    bubblesEl.innerHTML = msgs.map(m => {
+      const time = m.created_at ? new Date(m.created_at).toLocaleString('en-PK', {day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit',hour12:true}) : '';
+      return `<div class="bubble ${m.from_admin ? 'bubble-admin' : 'bubble-user'}">
+        ${esc(m.body)}<div class="bubble-time">${time}</div>
+      </div>`;
+    }).join('');
+    bubblesEl.scrollTop = bubblesEl.scrollHeight;
+
+    // Refresh unread count in sidebar dot
+    document.querySelectorAll('.msg-user-item').forEach(el => {
+      if (parseInt(el.dataset.uid) === userId) {
+        const dot = el.querySelector('.msg-unread-dot');
+        if (dot) dot.remove();
+      }
+    });
+  } catch(e) {
+    bubblesEl.innerHTML = `<div style="color:var(--red);font-size:13px;text-align:center;padding-top:20px;">Error: ${e.message}</div>`;
+  }
+}
+
+async function adminReply() {
+  if (!activeThreadUserId) return;
+  const input = document.getElementById('adminReplyInput');
+  const body = input.value.trim();
+  if (!body) { alert('Message cannot be empty.'); return; }
+
+  const res = await fetch(`${API}/admin/messages/${activeThreadUserId}/reply?admin_token=${encodeURIComponent(adminToken)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ body }),
+  });
+
+  if (res.ok) {
+    input.value = '';
+    openThread(activeThreadUserId, activeThreadMeta.name, activeThreadMeta.email);
+  } else {
+    const d = await res.json().catch(() => ({}));
+    alert(d.detail || 'Failed to send message.');
+  }
+}
+
+async function sendPaymentTemplate(plan) {
+  if (!activeThreadUserId) return;
+  if (!confirm(`Send ${plan} plan payment instructions to this user?`)) return;
+
+  const res = await fetch(`${API}/admin/messages/${activeThreadUserId}/send-payment-template?admin_token=${encodeURIComponent(adminToken)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ plan }),
+  });
+
+  if (res.ok) {
+    openThread(activeThreadUserId, activeThreadMeta.name, activeThreadMeta.email);
+  } else {
+    const d = await res.json().catch(() => ({}));
+    alert(d.detail || 'Failed to send template.');
+  }
+}
+
+// ── ADMIN-INITIATED TRIALS ────────────────────────────────────────────────
+async function giveAdminTrial(userId, plan) {
+  const planLabel = plan === 'professional' ? 'Pro' : 'Basic';
+  showConfirm('Give Trial', `Activate ${planLabel} trial (30 days) for this user?`, async () => {
+    const res = await fetch(`${API}/admin/users/${userId}/trial`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','X-Admin-Token':adminToken},
+      body: JSON.stringify({plan, days: 30}),
+    });
+    if (res.ok) { highlightRow(userId); loadUsers(); showToast(`${planLabel} trial activated`); }
+    else { const d = await res.json().catch(() => ({})); alert(d.detail || 'Failed to activate trial.'); }
+  });
+}
+
+async function cancelAdminTrial(userId) {
+  showConfirm('Cancel Trial', `Cancel this user's trial and downgrade to Free?`, async () => {
+    const res = await fetch(`${API}/admin/users/${userId}/trial`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json','X-Admin-Token':adminToken},
+      body: JSON.stringify({plan: 'cancel'}),
+    });
+    if (res.ok) { highlightRow(userId); loadUsers(); showToast('Trial cancelled'); }
+    else { const d = await res.json().catch(() => ({})); alert(d.detail || 'Failed to cancel trial.'); }
+  });
+}
+
+// ── TRIAL REQUESTS ────────────────────────────────────────────────────────
+async function loadTrialRequests() {
+  try {
+    const res = await fetch(`${API}/admin/trial-requests?admin_token=${encodeURIComponent(adminToken)}`);
+    if (!res.ok) return;
+    const items = await res.json();
+    allTrialRequests = items;
+    const pending = items.filter(i => i.status === 'pending').length;
+    const badge = document.getElementById('trialPendingBadge');
+    if (badge) { badge.textContent = pending || ''; badge.style.display = pending > 0 ? 'inline-flex' : 'none'; }
+    updateNavBadge('snavTrialCount', pending);
+    if (allUsers.length) renderUsers(allUsers);
+  } catch(e) {}
+}
+
+async function approveTrial(id, name, plan) {
+  const planLabel = plan === 'professional' ? 'Pro' : 'Basic';
+  showConfirm('Approve Trial', `Upgrade ${name || 'this user'} to ${planLabel} plan and send them an approval message?`, async () => {
+    const res = await fetch(`${API}/admin/trial-requests/${id}/approve?admin_token=${encodeURIComponent(adminToken)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    });
+    if (res.ok) { loadTrialRequests(); loadUsers(); loadMessages(); }
+    else { const d = await res.json().catch(() => ({})); alert(d.detail || 'Failed to approve.'); }
+  });
+}
+
+let rejectTrialId = null;
+function openRejectModal(id, name) {
+  rejectTrialId = id;
+  document.getElementById('rejectTrialName').textContent = name || `Request #${id}`;
+  document.getElementById('rejectTrialReason').value = '';
+  document.getElementById('rejectTrialModal').classList.remove('hidden');
+}
+
+async function submitRejectTrial() {
+  if (!rejectTrialId) return;
+  const reason = document.getElementById('rejectTrialReason').value.trim();
+  const res = await fetch(`${API}/admin/trial-requests/${rejectTrialId}/reject?admin_token=${encodeURIComponent(adminToken)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ reason }),
+  });
+  if (res.ok) {
+    document.getElementById('rejectTrialModal').classList.add('hidden');
+    rejectTrialId = null;
+    loadTrialRequests();
+    loadMessages();
+  } else {
+    const d = await res.json().catch(() => ({}));
+    alert(d.detail || 'Failed to reject.');
+  }
+}
+
+// ── SECTION NAV ──────────────────────────────────────────────────────────
+function navTo(sectionId) {
+  const el = document.getElementById(sectionId);
+  if (!el) return;
+  el.classList.remove('section-collapsed'); // expand if folded
+  setTimeout(() => {
+    const offset = 104;
+    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+    window.scrollTo({ top, behavior: 'smooth' });
+  }, 10);
+}
+
+function initCollapsibleSections() {
+  document.querySelectorAll('.section-block[id]').forEach(block => {
+    const heading = block.querySelector('.section-heading');
+    if (!heading) return;
+    const toggle = document.createElement('span');
+    toggle.className = 'section-toggle';
+    toggle.setAttribute('aria-hidden', 'true');
+    toggle.textContent = '▼';
+    heading.appendChild(toggle);
+    block.classList.add('section-collapsed');
+    heading.addEventListener('click', (e) => {
+      if (e.target.closest('button,a[href],input,select')) return;
+      block.classList.toggle('section-collapsed');
+    });
+  });
+}
+
+function initSectionNav() {
+  const sections = document.querySelectorAll('.section-block[id]');
+  const navItems = document.querySelectorAll('.snav-item[data-section]');
+
+  const setActive = (id) => {
+    navItems.forEach(el => {
+      el.classList.toggle('snav-active', el.dataset.section === id);
+    });
+    // Scroll active item into view in the nav
+    const activeEl = document.querySelector(`.snav-item[data-section="${id}"]`);
+    if (activeEl) activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) setActive(entry.target.id);
+    });
+  }, { threshold: 0.15, rootMargin: '-104px 0px -55% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+}
+
+function updateNavBadge(elId, count) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.textContent = count > 0 ? count : '';
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>

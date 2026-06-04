@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Refund Policy — AskTax.pk</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Cormorant+Garamond:wght@600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#0a0a0a;--surface:#111;--border:#1e1e1e;--text:#f0f0f0;--text-dim:#999;--text-muted:#555;--green:#00e87a;--yellow:#f5c518;--red:#e84040;--radius:12px;}
+[data-theme="light"]{--bg:#f7f7f5;--surface:#fff;--border:#e0e0da;--text:#111;--text-dim:#444;--text-muted:#999;--green:#008f4a;--yellow:#b8860b;--red:#cc0000;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.header{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;}
+.logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--text);font-weight:600;font-size:15px;}
+.logo-icon{width:28px;height:28px;}
+.theme-btn{background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-muted);padding:4px 6px;}
+.back-btn{padding:6px 14px;background:none;border:1px solid var(--border);border-radius:20px;color:var(--text-dim);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;text-decoration:none;transition:all 0.2s;}
+.back-btn:hover{border-color:var(--green);color:var(--green);}
+.content{max-width:760px;margin:0 auto;padding:48px 24px 80px;}
+.content h1{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;margin-bottom:8px;}
+.content .date{font-size:12px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;margin-bottom:36px;}
+h2{font-size:17px;font-weight:600;color:var(--text);margin:32px 0 12px;}
+p,li{font-size:14px;color:var(--text-dim);line-height:1.8;margin-bottom:10px;}
+ul{padding-left:20px;margin-bottom:12px;}
+a{color:var(--green);}
+.highlight{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;padding:14px 18px;margin:20px 0;}
+.highlight p{margin:0;color:var(--text-dim);}
+.table-simple{width:100%;border-collapse:collapse;margin:16px 0;}
+.table-simple th,.table-simple td{padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);font-size:13px;}
+.table-simple th{color:var(--text-muted);font-weight:500;font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;}
+.green{color:var(--green);}
+.red{color:var(--red);}
+.yellow{color:var(--yellow);}
+</style>
+</head>
+<body>
+<header class="header">
+  <a class="logo" href="index.html">
+    <img src="favicon.svg" alt="" class="logo-icon">
+    AskTax.pk
+  </a>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <a class="back-btn" href="index.html">← Home</a>
+  </div>
+</header>
+<div class="content">
+  <h1>Refund & Payment Policy</h1>
+  <div class="date">Last updated: May 2025 · Effective for all paid subscriptions</div>
+
+  <div class="highlight">
+    <p>AskTax.pk offers a <strong>7-day refund window</strong> for new subscribers. We want you to be confident before you commit. Read below for full details.</p>
+  </div>
+
+  <h2>1. Payment Methods</h2>
+  <p>We accept payments via:</p>
+  <ul>
+    <li><strong>Meezan Bank Transfer</strong> (direct bank account)</li>
+    <li><strong>Meezan Bank Payment Gateway</strong> (debit/credit card via JazzCash/EasyPaisa integration)</li>
+    <li><strong>Raast (Instant Payment System)</strong></li>
+    <li><strong>Manual bank transfer</strong> — send screenshot via the <a href="account.html#messages">in-app messaging</a></li>
+  </ul>
+  <p>Subscription is activated manually within <strong>1 business day</strong> after payment confirmation.</p>
+
+  <h2>2. Subscription Plans & Pricing</h2>
+  <table class="table-simple">
+    <tr><th>Plan</th><th>Price (Monthly)</th><th>Price (Annual)</th><th>Queries</th></tr>
+    <tr><td>Basic</td><td>PKR 2,999/mo</td><td>PKR 29,990/yr</td><td>200/month</td></tr>
+    <tr><td>Professional</td><td>PKR 5,999/mo</td><td>PKR 59,990/yr</td><td>Unlimited</td></tr>
+    <tr><td>Enterprise</td><td>Custom</td><td>Custom</td><td>Unlimited</td></tr>
+  </table>
+  <p>Prices are in <strong>Pakistani Rupees (PKR)</strong> and inclusive of any applicable taxes.</p>
+
+  <h2>3. Refund Policy</h2>
+  <h2 style="font-size:15px;margin-top:16px;">When We Refund</h2>
+  <ul>
+    <li class="green">✓ Within 7 days of your first payment, if you have used fewer than 20 queries.</li>
+    <li class="green">✓ Technical failure that prevented you from using the service for more than 3 consecutive days (verified by our logs).</li>
+    <li class="green">✓ Duplicate payment charged due to our system error.</li>
+  </ul>
+
+  <h2 style="font-size:15px;margin-top:16px;">When We Do Not Refund</h2>
+  <ul>
+    <li class="red">✗ After 7 days from the initial payment date.</li>
+    <li class="red">✗ If more than 20 queries have been used in the current billing period.</li>
+    <li class="red">✗ Partial months — cancellation does not trigger a prorated refund for the remaining days.</li>
+    <li class="red">✗ Annual plans after 14 days of activation (2-week cooling-off period applies instead).</li>
+    <li class="red">✗ Dissatisfaction with AI accuracy — our AI is powered by official FBR documents but does not replace a chartered accountant. Please use the free trial before subscribing.</li>
+  </ul>
+
+  <h2>4. Cancellation</h2>
+  <p>To cancel your subscription:</p>
+  <ul>
+    <li>Email <a href="mailto:support@asktax.pk">support@asktax.pk</a> or use the <a href="account.html#messages">in-app messaging</a>.</li>
+    <li>Your access continues until the end of the current billing period.</li>
+    <li>No automatic renewals — we contact you before each renewal for manual re-payment.</li>
+  </ul>
+
+  <h2>5. Refund Process (Meezan Bank)</h2>
+  <p>Refunds are issued to the <strong>same account or card</strong> used for payment:</p>
+  <ul>
+    <li>Bank transfer refunds: processed within <strong>2-3 business days</strong>.</li>
+    <li>Card refunds via Meezan Bank gateway: processed within <strong>5-7 business days</strong> (bank processing time applies).</li>
+    <li>You will receive a confirmation via email or in-app message once the refund is initiated.</li>
+  </ul>
+
+  <h2>6. Disputes</h2>
+  <p>If you believe a charge is incorrect, contact us within <strong>30 days</strong> of the transaction. We will investigate and respond within 2 business days.</p>
+  <p>For unresolved disputes, you may contact the <strong>State Bank of Pakistan Consumer Protection Unit</strong> or your bank's dispute resolution desk.</p>
+
+  <h2>7. Contact</h2>
+  <p>Email: <a href="mailto:support@asktax.pk">support@asktax.pk</a></p>
+  <p>In-app: <a href="account.html#messages">Messages &amp; Support</a> (Mon–Sat, 10am–6pm PKT)</p>
+</div>
+<script>
+let isDark = localStorage.getItem('theme') !== 'light';
+function applyTheme() { document.documentElement.setAttribute('data-theme', isDark?'dark':'light'); document.getElementById('themeBtn').textContent = isDark?'🌙':'☀️'; }
+function toggleTheme() { isDark=!isDark; localStorage.setItem('theme',isDark?'dark':'light'); applyTheme(); }
+applyTheme();
+</script>
+<footer style="border-top:1px solid var(--border);padding:24px;text-align:center;font-size:12px;color:var(--text-muted);">
+  <span>AskTax.pk &nbsp;·&nbsp; Not affiliated with FBR or Government of Pakistan</span><br>
+  <span style="margin-top:8px;display:inline-block;">
+    <a href="privacy-policy.html" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Privacy Policy</a>
+    <a href="refund-policy.html" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Refund Policy</a>
+    <a href="terms.html" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Terms of Service</a>
+    <a href="blog.html" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Blog</a>
+    <a href="mailto:support@asktax.pk" style="color:var(--text-muted);text-decoration:none;margin:0 8px;">Support</a>
+  </span>
+</footer></body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AskTax.pk — Join Your Team</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=IBM+Plex+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f0d;--surface:#111a15;--surface2:#162019;--border:#1e2e22;--border2:#243329;--green:#00e87a;--green-dim:#00b85f;--text:#e8f0eb;--text-dim:#8fa897;--text-muted:#4a6354;--red:#ff4d4d;--radius:12px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.hidden{display:none!important;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:40px;width:100%;max-width:440px;}
+.logo{font-size:18px;font-weight:700;text-decoration:none;color:var(--text);display:block;margin-bottom:24px;}
+.logo span{color:var(--green);}
+.card h1{font-family:'Cormorant Garamond',serif;font-size:26px;margin-bottom:8px;}
+.firm-name{font-size:14px;color:var(--green);font-weight:600;margin-bottom:20px;}
+.form-group{margin-bottom:14px;}
+.form-label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:5px;text-transform:uppercase;}
+.form-input{width:100%;padding:11px 14px;background:var(--surface2);border:1px solid var(--border2);color:var(--text);border-radius:8px;font-family:inherit;font-size:14px;outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--green);}
+.form-input:disabled{opacity:0.6;cursor:not-allowed;}
+.btn{width:100%;padding:13px;background:var(--green);color:#000;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px;}
+.btn:hover{background:var(--green-dim);}
+.btn:disabled{opacity:0.5;cursor:not-allowed;}
+.error{color:var(--red);font-size:12px;margin-top:8px;text-align:center;}
+.loading{text-align:center;color:var(--text-muted);font-size:14px;padding:40px 0;}
+</style>
+</head>
+<body>
+<div class="card">
+  <a class="logo" href="/"><span>Ask</span>Tax.pk</a>
+
+  <div id="loadingState" class="loading">Loading your invite...</div>
+
+  <div id="joinForm" class="hidden">
+    <h1>You're Invited!</h1>
+    <div class="firm-name" id="firmNameDisplay"></div>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px;line-height:1.6;">Set up your account to join your team on AskTax.pk.</p>
+
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="inviteEmail" type="email" disabled>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Your Name</label>
+      <input class="form-input" id="joinName" type="text" placeholder="Full name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Create Password</label>
+      <input class="form-input" id="joinPassword" type="password" placeholder="Min 8 characters">
+    </div>
+    <button class="btn" id="joinBtn" onclick="acceptInvite()">Join Team →</button>
+    <div class="error hidden" id="joinErr"></div>
+  </div>
+
+  <div id="successState" class="hidden" style="text-align:center;padding:20px 0;">
+    <div style="font-size:40px;margin-bottom:12px;">✅</div>
+    <h2 style="font-family:'Cormorant Garamond',serif;font-size:24px;margin-bottom:8px;">Welcome to the team!</h2>
+    <p style="font-size:13px;color:var(--text-dim);margin-bottom:20px;line-height:1.6;">Your account is ready. Taking you to AskTax.pk…</p>
+    <a href="/" class="btn" style="display:inline-block;text-decoration:none;">Open AskTax.pk →</a>
+  </div>
+
+  <div id="errorState" class="hidden">
+    <p style="color:var(--red);font-size:14px;">This invite link is invalid or has already been used.</p>
+    <a href="/" style="color:var(--green);font-size:13px;display:block;margin-top:12px;">Go to AskTax.pk →</a>
+  </div>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' ? 'http://localhost:8002/api' : 'https://api.asktax.pk/api';
+const params = new URLSearchParams(window.location.search);
+const inviteToken = params.get('token');
+
+async function loadInvite() {
+  if (!inviteToken) { showError(); return; }
+  try {
+    const res = await fetch(`${API}/firm/invite-info?token=${encodeURIComponent(inviteToken)}`);
+    if (!res.ok) { showError(); return; }
+    const data = await res.json();
+    document.getElementById('inviteEmail').value = data.email;
+    document.getElementById('firmNameDisplay').textContent = `Join ${data.firm_name}`;
+    document.getElementById('loadingState').classList.add('hidden');
+    document.getElementById('joinForm').classList.remove('hidden');
+  } catch(e) { showError(); }
+}
+
+async function acceptInvite() {
+  const name = document.getElementById('joinName').value.trim();
+  const password = document.getElementById('joinPassword').value;
+  const errEl = document.getElementById('joinErr');
+  const btn = document.getElementById('joinBtn');
+  errEl.classList.add('hidden');
+
+  if (!password || password.length < 8) { errEl.textContent = 'Password must be at least 8 characters'; errEl.classList.remove('hidden'); return; }
+
+  btn.disabled = true; btn.textContent = 'Joining...';
+  try {
+    const res = await fetch(`${API}/firm/accept-invite`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({token: inviteToken, full_name: name, password})
+    });
+    const data = await res.json();
+    if (!res.ok) { errEl.textContent = data.detail || 'Failed'; errEl.classList.remove('hidden'); return; }
+    localStorage.setItem('cabot_token', data.access_token);
+    localStorage.setItem('cabot_email', data.user.email);
+    document.getElementById('joinForm').classList.add('hidden');
+    document.getElementById('successState').classList.remove('hidden');
+    setTimeout(() => { window.location.href = '/'; }, 2000);
+  } catch(e) {
+    errEl.textContent = 'Connection error'; errEl.classList.remove('hidden');
+  } finally { btn.disabled = false; btn.textContent = 'Join Team →'; }
+}
+
+function showError() {
+  document.getElementById('loadingState').classList.add('hidden');
+  document.getElementById('errorState').classList.remove('hidden');
+}
+
+loadInvite();
+</script>
+</body>
+</html>

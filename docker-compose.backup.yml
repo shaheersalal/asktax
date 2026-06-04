@@ -1,0 +1,25 @@
+services:
+  backup-runner:
+    image: python:3.11-slim
+    container_name: fbrbot_backup
+    working_dir: /app
+    volumes:
+      - .:/app
+      - backup_data:/backups
+    command: >
+      sh -c "apt-get update -qq &&
+             apt-get install -y -qq postgresql-client curl &&
+             pip install fastapi uvicorn redis minio httpx psycopg2-binary --quiet &&
+             uvicorn app.backup.service:app --host 0.0.0.0 --port 8099"
+    env_file:
+      - .env
+    networks:
+      - fbrbot_internal
+    restart: always
+
+volumes:
+  backup_data:
+
+networks:
+  fbrbot_internal:
+    external: true

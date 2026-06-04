@@ -1,0 +1,36 @@
+# Secrets — never commit these
+.env
+.env.*
+!.env.example
+
+# Cloudflare credentials
+.cloudflared/*.json
+.cloudflared/cert.pem
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+*.egg-info/
+
+# Data & uploads
+*.db
+*.sqlite
+data/
+uploads/
+
+# Cloudflare binary
+cloudflared.exe
+cloudflared-creds/
+
+# Scrapers (proprietary harvesting logic)
+app/scrapers/
+
+# Misc junk files
+r.json*
+
+# OS
+.DS_Store
+Thumbs.db

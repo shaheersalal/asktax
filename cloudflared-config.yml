@@ -1,0 +1,11 @@
+tunnel: 95d263fd-9c68-48f0-b992-73c27d8dc182
+credentials-file: /etc/cloudflared/creds/95d263fd-9c68-48f0-b992-73c27d8dc182.json
+
+ingress:
+  - hostname: asktax.pk
+    service: http://frontend:3001
+  - hostname: www.asktax.pk
+    service: http://frontend:3001
+  - hostname: api.asktax.pk
+    service: http://api:8002
+  - service: http_status:404

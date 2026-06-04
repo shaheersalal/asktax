@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AskTax.pk — Firm Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0f0d;--surface:#111a15;--surface2:#162019;--border:#1e2e22;--border2:#243329;--green:#00e87a;--green-dim:#00b85f;--green-subtle:rgba(0,232,122,0.06);--text:#e8f0eb;--text-dim:#8fa897;--text-muted:#4a6354;--red:#ff4d4d;--yellow:#f5c518;--radius:12px;}
+[data-theme="light"]{--bg:#f5f7f5;--surface:#fff;--surface2:#eef3ef;--border:#d4e2d8;--border2:#c8dccf;--green:#00a854;--green-dim:#007a3d;--green-subtle:rgba(0,168,84,0.06);--text:#1a2e1f;--text-dim:#3d6147;--text-muted:#7a9e82;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;}
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.logo{font-size:18px;font-weight:700;cursor:pointer;text-decoration:none;color:var(--text);}
+.logo span{color:var(--green);}
+.header-right{display:flex;align-items:center;gap:10px;}
+.btn{padding:8px 18px;border-radius:20px;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:0.2s;}
+.btn-green{background:var(--green);color:#000;}
+.btn-green:hover{background:var(--green-dim);}
+.btn-outline{background:transparent;border:1px solid var(--border2);color:var(--text-dim);}
+.btn-outline:hover{border-color:var(--green);color:var(--green);}
+.btn-red{background:var(--red);color:#fff;}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:6px;}
+.theme-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border2);background:var(--surface2);cursor:pointer;font-size:14px;}
+
+/* LAYOUT */
+.container{max-width:1100px;margin:0 auto;padding:32px 24px;}
+
+/* PLAN BADGE */
+.plan-badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;}
+.plan-trial{background:rgba(245,197,24,0.15);color:var(--yellow);}
+.plan-basic{background:var(--green-subtle);color:var(--green);}
+.plan-pro{background:var(--green);color:#000;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+.stat-label{font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;margin-bottom:6px;}
+.stat-value{font-size:28px;font-weight:700;color:var(--green);}
+.stat-sub{font-size:11px;color:var(--text-muted);margin-top:3px;}
+
+/* SECTION */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.section-title{font-size:16px;font-weight:600;}
+
+/* TABLE */
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:24px;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);font-size:13px;}
+th{font-size:10px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;text-transform:uppercase;background:var(--surface2);}
+tr:last-child td{border-bottom:none;}
+
+/* PROGRESS BAR */
+.progress-wrap{width:100px;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;display:inline-block;}
+.progress-bar{height:100%;background:var(--green);border-radius:3px;transition:width 0.3s;}
+.progress-bar.warn{background:var(--yellow);}
+.progress-bar.danger{background:var(--red);}
+
+/* ROLE BADGE */
+.role{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:600;text-transform:uppercase;font-family:'IBM Plex Mono',monospace;}
+.role-owner{background:var(--green-subtle);color:var(--green);}
+.role-admin{background:rgba(245,197,24,0.15);color:var(--yellow);}
+.role-member{background:rgba(255,255,255,0.05);color:var(--text-muted);}
+
+/* INVITE FORM */
+.invite-form{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+.invite-form h4{font-size:14px;font-weight:600;margin-bottom:14px;}
+.form-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;}
+.form-group{flex:1;min-width:180px;}
+.form-label{display:block;font-size:11px;color:var(--text-dim);margin-bottom:5px;text-transform:uppercase;}
+.form-input{width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border2);color:var(--text);border-radius:8px;font-family:inherit;font-size:13px;outline:none;}
+.form-input:focus{border-color:var(--green);}
+select.form-input{cursor:pointer;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:500;padding:24px;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px;width:100%;max-width:440px;position:relative;}
+.modal h3{font-size:18px;margin-bottom:6px;}
+.modal p{font-size:13px;color:var(--text-dim);margin-bottom:20px;line-height:1.6;}
+.modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;}
+
+/* INVITE LINK BOX */
+.link-box{background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:12px 14px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--green);word-break:break-all;margin-bottom:14px;}
+
+/* ALERTS */
+.alert{padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;}
+.alert-success{background:rgba(0,232,122,0.1);border:1px solid rgba(0,232,122,0.2);color:var(--green);}
+.alert-error{background:rgba(255,77,77,0.1);border:1px solid rgba(255,77,77,0.2);color:var(--red);}
+.alert-warn{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.2);color:var(--yellow);}
+.hidden{display:none!important;}
+
+/* TRIAL BANNER */
+.trial-banner{background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.25);border-radius:var(--radius);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+.trial-text{font-size:13px;color:var(--yellow);}
+
+/* LOGIN PAGE */
+#loginPage{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px;width:100%;max-width:420px;}
+.login-card h2{font-size:22px;margin-bottom:6px;}
+.login-card p{font-size:13px;color:var(--text-dim);margin-bottom:24px;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN PAGE -->
+<div id="loginPage">
+  <div class="login-card">
+    <a href="/" style="color:var(--green);font-size:13px;text-decoration:none;">← Back to AskTax.pk</a>
+    <br><br>
+    <h2>Firm Dashboard</h2>
+    <p>Sign in to manage your team and account.</p>
+    <div class="form-group" style="margin-bottom:14px;">
+      <label class="form-label">Email</label>
+      <input class="form-input" id="loginEmail" type="email" placeholder="you@firm.com" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="form-group" style="margin-bottom:20px;">
+      <label class="form-label">Password</label>
+      <input class="form-input" id="loginPassword" type="password" placeholder="Your password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn btn-green" style="width:100%;" onclick="doLogin()">Sign In</button>
+    <div id="loginErr" style="color:var(--red);font-size:12px;margin-top:10px;text-align:center;"></div>
+    <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--text-muted);">
+      Not registered yet? <a href="firm_signup.html" style="color:var(--green);">Register your firm →</a>
+    </div>
+    <div style="text-align:center;margin-top:8px;font-size:11px;color:var(--text-muted);">
+      Forgot password? <a href="mailto:support@asktax.pk?subject=Password%20Reset%20-%20AskTax.pk%20Firm" style="color:var(--text-dim);">Email support →</a>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboardPage" class="hidden">
+  <header class="header">
+    <a class="logo" href="/"><span>Ask</span>Tax.pk</a>
+    <div class="header-right">
+      <span id="firmNameDisplay" style="font-size:13px;color:var(--text-dim);"></span>
+      <span id="planBadge" class="plan-badge"></span>
+      <button class="theme-btn" onclick="toggleTheme()">🌙</button>
+      <button class="btn btn-outline btn-sm" onclick="goToChat()">Open Chat</button>
+      <button class="btn btn-outline btn-sm" onclick="doLogout()">Logout</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <div id="trialBanner" class="trial-banner hidden">
+      <div class="trial-text">⏳ <strong>Trial ends in <span id="trialDays"></span> days.</strong> Upgrade to keep your team active.</div>
+      <button class="btn btn-sm" style="background:var(--yellow);color:#000;" onclick="contactUpgrade()">Upgrade Plan</button>
+    </div>
+    <div id="expiredBanner" class="hidden" style="background:rgba(255,77,77,0.1);border:1px solid rgba(255,77,77,0.3);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+      <div style="font-size:13px;color:var(--red);">🔒 <strong>Your trial has expired.</strong> Chat access is paused for your team. Contact us to activate your subscription.</div>
+      <button class="btn btn-sm btn-red" onclick="contactUpgrade()">Contact to Activate →</button>
+    </div>
+
+    <div id="alertBox" class="hidden"></div>
+
+    <!-- STATS -->
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <!-- INVITE FORM -->
+    <div id="inviteSection">
+      <div class="section-header">
+        <div class="section-title">Team Members</div>
+      </div>
+      <div class="invite-form" id="inviteForm">
+        <h4>Invite a Team Member</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-input" id="inviteEmail" type="email" placeholder="colleague@firm.com">
+          </div>
+          <div class="form-group" style="max-width:160px;">
+            <label class="form-label">Role</label>
+            <select class="form-input" id="inviteRole">
+              <option value="firm_member">Member</option>
+              <option value="firm_admin">Admin</option>
+            </select>
+          </div>
+          <button class="btn btn-green btn-sm" style="height:38px;margin-top:auto;" onclick="sendInvite()">Send Invite</button>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;">Member: can use the chat. Admin: can also invite and manage members.</div>
+      </div>
+
+      <!-- MEMBERS TABLE -->
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Queries This Month</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="membersTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- INVITE LINK MODAL -->
+<div class="modal-overlay hidden" id="inviteModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeInviteModal()">✕</button>
+    <h3>Invite Sent ✓</h3>
+    <p>Share this link with your team member. They'll set their password and join your firm.</p>
+    <div class="link-box" id="inviteLinkBox"></div>
+    <button class="btn btn-green" style="width:100%;" onclick="copyInviteLink()">Copy Link</button>
+    <div style="font-size:11px;color:var(--text-muted);margin-top:10px;text-align:center;">Link expires when accepted. You can resend if needed.</div>
+  </div>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' ? 'http://localhost:8002/api' : 'https://api.asktax.pk/api';
+let token = localStorage.getItem('firm_token');
+let firmData = null;
+let isDark = localStorage.getItem('theme') !== 'light';
+let currentInviteLink = '';
+
+document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+function toggleTheme() {
+  isDark = !isDark;
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  document.querySelector('.theme-btn').textContent = isDark ? '🌙' : '☀️';
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  document.getElementById('loginErr').textContent = '';
+  if (!email || !password) { document.getElementById('loginErr').textContent = 'Enter email and password'; return; }
+  try {
+    const res = await fetch(`${API}/auth/login`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    if (!res.ok) { document.getElementById('loginErr').textContent = data.detail || 'Login failed'; return; }
+    if (!data.user?.is_firm_admin) {
+      document.getElementById('loginErr').textContent = 'This account does not have firm admin access.';
+      return;
+    }
+    token = data.access_token;
+    localStorage.setItem('firm_token', token);
+    showDashboard();
+  } catch(e) {
+    document.getElementById('loginErr').textContent = 'Connection error';
+  }
+}
+
+function doLogout() {
+  token = null;
+  localStorage.removeItem('firm_token');
+  document.getElementById('dashboardPage').classList.add('hidden');
+  document.getElementById('loginPage').classList.remove('hidden');
+}
+
+function goToChat() { window.location.href = '/'; }
+
+// ── DASHBOARD ─────────────────────────────────────────────────────────────
+async function showDashboard() {
+  document.getElementById('loginPage').classList.add('hidden');
+  document.getElementById('dashboardPage').classList.remove('hidden');
+  await loadFirmData();
+  await loadMembers();
+}
+
+async function loadFirmData() {
+  try {
+    const res = await fetch(`${API}/firm/me?token=${token}`);
+    if (!res.ok) { doLogout(); return; }
+    firmData = await res.json();
+
+    document.getElementById('firmNameDisplay').textContent = firmData.name;
+    const badge = document.getElementById('planBadge');
+    badge.textContent = firmData.plan.toUpperCase();
+    badge.className = `plan-badge plan-${firmData.plan}`;
+
+    // Trial banner
+    if (firmData.trial_ends_at) {
+      const days = Math.ceil((new Date(firmData.trial_ends_at) - new Date()) / 86400000);
+      if (firmData.status === 'trial' && days > 0) {
+        document.getElementById('trialDays').textContent = days;
+        document.getElementById('trialBanner').classList.remove('hidden');
+      } else if (firmData.status === 'trial' && days <= 0) {
+        document.getElementById('expiredBanner').classList.remove('hidden');
+        document.getElementById('inviteForm').innerHTML = `
+          <div style="font-size:13px;color:var(--red);">🔒 Inviting is paused — your trial has expired. <a href="#" onclick="contactUpgrade();return false;" style="color:var(--green);">Message us to activate →</a></div>
+        `;
+      }
+    }
+
+    // Stats
+    const used = firmData.seats_used;
+    const limit = firmData.seats_limit;
+    document.getElementById('statsGrid').innerHTML = `
+      <div class="stat-card"><div class="stat-label">Active Seats</div><div class="stat-value">${used}/${limit}</div><div class="stat-sub">team members</div></div>
+      <div class="stat-card"><div class="stat-label">Pending Invites</div><div class="stat-value">${firmData.seats_pending}</div><div class="stat-sub">awaiting acceptance</div></div>
+      <div class="stat-card"><div class="stat-label">Queries / Seat</div><div class="stat-value">${firmData.queries_per_seat >= 999999 ? '∞' : firmData.queries_per_seat}</div><div class="stat-sub">per month</div></div>
+      <div class="stat-card"><div class="stat-label">Plan</div><div class="stat-value" style="font-size:18px;text-transform:capitalize;">${firmData.plan}</div><div class="stat-sub">${firmData.status}</div></div>
+    `;
+
+    // Hide invite form if seats full
+    if (used >= limit) {
+      document.getElementById('inviteForm').innerHTML = `
+        <div style="font-size:13px;color:var(--yellow);">⚠️ All ${limit} seats are in use. <a href="#" onclick="contactUpgrade();return false;" style="color:var(--green);text-decoration:underline;">Message us to add more seats →</a></div>
+      `;
+    }
+  } catch(e) {
+    showAlert('Failed to load firm data', 'error');
+  }
+}
+
+async function loadMembers() {
+  try {
+    const res = await fetch(`${API}/firm/members?token=${token}`);
+    const members = await res.json();
+    const tbody = document.getElementById('membersTable');
+    if (!members.length) {
+      tbody.innerHTML = '<tr><td colspan="6" style="color:var(--text-muted);text-align:center;padding:24px;">No members yet. Invite your team above.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = members.map(m => {
+      const pct = firmData ? Math.round((m.queries_used / firmData.queries_per_seat) * 100) : 0;
+      const barClass = pct > 90 ? 'danger' : pct > 70 ? 'warn' : '';
+      const roleClass = m.role === 'firm_owner' ? 'role-owner' : m.role === 'firm_admin' ? 'role-admin' : 'role-member';
+      const roleLabel = m.role === 'firm_owner' ? 'Owner' : m.role === 'firm_admin' ? 'Admin' : 'Member';
+      const statusColor = m.status === 'active' ? 'var(--green)' : 'var(--red)';
+      const isPending = !m.invite_accepted;
+
+      return `
+        <tr>
+          <td style="font-weight:500;">${esc(m.full_name)}${isPending ? ' <span style="font-size:10px;color:var(--yellow);">(pending)</span>' : ''}</td>
+          <td style="color:var(--text-dim);font-size:12px;">${esc(m.email)}</td>
+          <td><span class="role ${roleClass}">${roleLabel}</span></td>
+          <td>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="progress-wrap"><div class="progress-bar ${barClass}" style="width:${Math.min(pct,100)}%"></div></div>
+              <span style="font-size:11px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;">${m.queries_used}/${firmData?.queries_per_seat || 200}</span>
+            </div>
+          </td>
+          <td><span style="color:${statusColor};font-size:12px;">${m.status}</span></td>
+          <td>
+            ${m.role !== 'firm_owner' ? `<button class="btn btn-sm btn-outline" onclick="removeMember(${m.id},'${esc(m.email)}')">Remove</button>` : ''}
+          </td>
+        </tr>
+      `;
+    }).join('');
+  } catch(e) {
+    showAlert('Failed to load members', 'error');
+  }
+}
+
+// ── INVITE ────────────────────────────────────────────────────────────────
+async function sendInvite() {
+  const email = document.getElementById('inviteEmail').value.trim();
+  const role = document.getElementById('inviteRole').value;
+  if (!email) { showAlert('Enter an email address', 'error'); return; }
+
+  try {
+    const res = await fetch(`${API}/firm/invite?token=${token}`, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, role})
+    });
+    const data = await res.json();
+    if (!res.ok) { showAlert(data.detail || 'Invite failed', 'error'); return; }
+
+    document.getElementById('inviteEmail').value = '';
+    currentInviteLink = data.invite_link;
+    document.getElementById('inviteLinkBox').textContent = data.invite_link;
+    document.getElementById('inviteModal').classList.remove('hidden');
+    loadMembers();
+    loadFirmData();
+  } catch(e) {
+    showAlert('Connection error', 'error');
+  }
+}
+
+function closeInviteModal() { document.getElementById('inviteModal').classList.add('hidden'); }
+
+function copyInviteLink() {
+  navigator.clipboard.writeText(currentInviteLink).then(() => {
+    showAlert('Link copied to clipboard!', 'success');
+    closeInviteModal();
+  });
+}
+
+async function removeMember(memberId, email) {
+  if (!confirm(`Remove ${email} from your firm?`)) return;
+  try {
+    const res = await fetch(`${API}/firm/members/${memberId}?token=${token}`, { method: 'DELETE' });
+    if (res.ok) { loadMembers(); loadFirmData(); showAlert('Member removed', 'success'); }
+    else { const d = await res.json(); showAlert(d.detail || 'Failed', 'error'); }
+  } catch(e) { showAlert('Connection error', 'error'); }
+}
+
+function contactUpgrade() {
+  // Sync token so account.html messaging system can read it
+  if (token) localStorage.setItem('token', token);
+  window.location.href = 'account.html#messages';
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────
+function showAlert(msg, type) {
+  const el = document.getElementById('alertBox');
+  el.className = `alert alert-${type}`;
+  el.textContent = msg;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 4000);
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+if (token) {
+  showDashboard();
+}
+</script>
+</body>
+</html>

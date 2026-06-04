@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# Allow Google AI Overviews (drives organic search traffic)
+User-agent: Google-Extended
+Allow: /
+
+# Block AI training crawlers
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+Sitemap: https://asktax.pk/sitemap.xml
