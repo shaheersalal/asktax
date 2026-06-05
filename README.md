@@ -13,26 +13,36 @@
 
 ## Architecture
 
-```
-Public Website (HTML/CSS/JS)
-├── index.html          ← Landing page
-├── firm_signup.html    ← Firm onboarding
-├── shared-chat.html    ← Public demo chat
-└── tax-guide.html      ← SEO tax content
+```mermaid
+flowchart TD
+    U([User / CA Firm Client]) --> FE[Frontend\nHTML + CSS + JS]
+    FE -->|REST / SSE| API[FastAPI Backend\nPython]
 
-FastAPI Backend
-├── /auth               ← JWT authentication
-├── /firms              ← Firm management (multi-tenant)
-├── /documents          ← Document upload + ingestion
-├── /chat               ← RAG chat endpoint (WebSocket + SSE)
-├── /admin              ← Platform admin
-└── /workers            ← Celery async ingestion jobs
+    API --> AUTH[/auth\nJWT Authentication]
+    API --> FIRMS[/firms\nMulti-tenant Management]
+    API --> DOCS[/documents\nUpload + Ingestion]
+    API --> CHAT[/chat\nRAG Query Engine]
+    API --> ADMIN[/admin\nPlatform Admin]
 
-Data Layer
-├── PostgreSQL          ← Users, firms, documents metadata
-├── Qdrant              ← Vector embeddings per firm
-├── MinIO               ← Document storage (S3-compatible)
-└── Redis               ← Task queue + cache
+    DOCS -->|async job| WORKER[Celery Worker]
+    WORKER --> CHUNK[Chunker\n~500 token splits]
+    CHUNK --> EMBED[OpenAI Embeddings\ntext-embedding-3-large]
+    EMBED --> QDRANT[(Qdrant\nper-firm collections)]
+
+    CHAT --> QDRANT
+    QDRANT -->|top-k chunks| RERANK[Jina Reranker\ncross-encoder]
+    RERANK --> LLM[OpenAI GPT-4o\nAnswer + Citations]
+    LLM --> FE
+
+    WORKER --> MINIO[(MinIO\nDocument Storage)]
+    API --> PG[(PostgreSQL\nUsers + Firms + Metadata)]
+    API --> REDIS[(Redis\nTask Queue + Cache)]
+    WORKER --> REDIS
+
+    subgraph Infrastructure
+        NGINX[Nginx] --> API
+        CF[Cloudflare Tunnel] --> NGINX
+    end
 ```
 
 ## Tech Stack
