@@ -1,0 +1,7 @@
+# Mark frontend HTML/CSS/JS as vendored so GitHub shows Python as primary language
+frontend/*.html linguist-vendored=true
+frontend/**/*.html linguist-vendored=true
+frontend/*.css linguist-vendored=true
+frontend/*.js linguist-vendored=true
+frontend/**/*.css linguist-vendored=true
+frontend/**/*.js linguist-vendored=true
